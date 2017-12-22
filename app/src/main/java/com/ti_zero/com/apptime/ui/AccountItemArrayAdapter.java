@@ -1,7 +1,14 @@
 package com.ti_zero.com.apptime.ui;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -12,11 +19,13 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
 
+import com.ti_zero.com.apptime.MainTimeActivity;
 import com.ti_zero.com.apptime.R;
 import com.ti_zero.com.apptime.data.objects.AbstractItem;
 import com.ti_zero.com.apptime.ui.dto.ItemRowPair;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by uni on 12/22/17.
@@ -25,6 +34,7 @@ import java.util.List;
 public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
     public static final String STOP = "Stop";
     public static final String START = "Start";
+    public static final int NOTIFICATION_ID_RUNNING_ITEM = 10001;
     private final Context context;
     private final List<AbstractItem> items;
     private ItemRowPair runningItemRowPair;
@@ -53,14 +63,11 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
         final AbstractItem item = items.get(position);
         txtAccountName.setText(item.getName());
         if (firstShow) {
-            if(item.getChildren()==null) {
+            if (item.getChildren() == null) {
                 btnUp.setVisibility(View.INVISIBLE);
             }
             if (item.isRunning()) {
-                btnToggle.setText(STOP);
-                chronoTime.setBase(SystemClock.elapsedRealtime() - item.getTotalTime());
-                chronoTime.start();
-                runningItemRowPair = new ItemRowPair(item, btnToggle, chronoTime);
+                startItem(item, chronoTime, btnToggle, true);
             } else {
                 btnToggle.setText(START);
             }
@@ -69,9 +76,9 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
                 @Override
                 public void onClick(View view) {
                     if (item.isRunning()) {
-                        stopItem(item, chronoTime, btnToggle);
+                        stopItem(runningItemRowPair);
                     } else {
-                        startItem(item, chronoTime, btnToggle);
+                        startItem(item, chronoTime, btnToggle, false);
                     }
 
                     //TODO refactor adapter and activity
@@ -107,23 +114,50 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
         return rowView;
     }
 
-    private void stopItem(AbstractItem item, Chronometer chronoTime, Button btnToggle) {
-        item.stop();
-        chronoTime.stop();
-        btnToggle.setText(START);
+    private void stopItem(ItemRowPair itemRowPair) {
+        itemRowPair.getItem().stop();
+        itemRowPair.getBtnToggle().setText(START);
+        itemRowPair.getChronoTime().stop();
+        removeNotification();
+        runningItemRowPair=null;
     }
 
-    private void startItem(AbstractItem item, Chronometer chronoTime, Button btnToggle) {
-        item.addTimeEntry();
+    private void removeNotification() {
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(NOTIFICATION_ID_RUNNING_ITEM);
+    }
+
+    private void startItem(AbstractItem item, Chronometer chronoTime, Button btnToggle, boolean existingTimeEntry) {
+        if (runningItemRowPair != null) {
+            stopItem(runningItemRowPair);
+        }
+        if(!existingTimeEntry) {
+            item.addTimeEntry();
+        }
         chronoTime.start();
         chronoTime.setBase(SystemClock.elapsedRealtime() - item.getTotalTime());
         btnToggle.setText(STOP);
-        if(runningItemRowPair!=null) {
-            runningItemRowPair.getItem().stop();
-            runningItemRowPair.getBtnToggle().setText(START);
-            runningItemRowPair.getChronoTime().stop();
-        }
+        createNotification(item);
         runningItemRowPair = new ItemRowPair(item, btnToggle, chronoTime);
+    }
+
+    private void createNotification(AbstractItem item) {
+        //TODO only works for older android versions, consider newer ones too API 26
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.ic_launcher_background)
+                        .setContentTitle("AppTime is running")
+                        .setContentText("Item: "+item.getName());
+
+        Intent notificationIntent = new Intent(context, MainTimeActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(NOTIFICATION_ID_RUNNING_ITEM, builder.build());
+
+
     }
 
 
