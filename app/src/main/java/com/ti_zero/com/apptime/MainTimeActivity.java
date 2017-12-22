@@ -2,31 +2,88 @@ package com.ti_zero.com.apptime;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import com.ti_zero.com.apptime.data.DataStorage;
+import com.ti_zero.com.apptime.data.objects.AccountItem;
+import com.ti_zero.com.apptime.data.objects.GroupItem;
+import com.ti_zero.com.apptime.ui.AccountItemArrayAdapter;
+
+import java.util.Date;
 
 public class MainTimeActivity extends AppCompatActivity {
+
+    private static DataStorage dataStorage = new DataStorage();
+    private AccountItemArrayAdapter adapter;
+
+
+    public MainTimeActivity() {
+        super();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        adapter = new AccountItemArrayAdapter(this,
+                android.R.layout.simple_expandable_list_item_1, dataStorage.getSelectedGroup().getChildren());
         setContentView(R.layout.activity_main_time);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-       FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        ListView accountItems = (ListView) findViewById(R.id.items);
+        accountItems.setAdapter(adapter);
+        registerForContextMenu(accountItems);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addItem);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                dataStorage.getSelectedGroup().addItem(new AccountItem("New", "new test description", new Date(), false));
+                adapter.notifyDataSetChanged();
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                //       .setAction("Action", null).show();
             }
         });
+
     }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        super.onCreateContextMenu(contextMenu, view, contextMenuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_item, contextMenu);
+
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.btnMenuItemOpen:
+                //editNote(info.position);
+                return true;
+            case R.id.btnMenuItemEdit:
+                //deleteNote(info.id);
+                return true;
+            case R.id.btnMenuItemRemove:
+                removeItem(info.position);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    private void removeItem(int position) {
+        dataStorage.getSelectedGroup().removeItem(position);
+        adapter.notifyDataSetChanged();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -45,8 +102,12 @@ public class MainTimeActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.btnMenuMainNewGroup) {
+            dataStorage.getSelectedGroup().addItem(new GroupItem("New Group", "", new Date(), false));
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 }
