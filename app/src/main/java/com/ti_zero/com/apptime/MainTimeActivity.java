@@ -13,15 +13,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.ti_zero.com.apptime.data.DataStorage;
-import com.ti_zero.com.apptime.data.objects.AccountItem;
-import com.ti_zero.com.apptime.data.objects.GroupItem;
+import com.ti_zero.com.apptime.data.objects.factories.ObjectFactory;
 import com.ti_zero.com.apptime.ui.AccountItemArrayAdapter;
-
-import java.util.Date;
 
 public class MainTimeActivity extends AppCompatActivity {
 
     private static DataStorage dataStorage = new DataStorage();
+    private ObjectFactory objectFactory = new ObjectFactory();
     private AccountItemArrayAdapter adapter;
 
 
@@ -44,7 +42,7 @@ public class MainTimeActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dataStorage.getSelectedGroup().addItem(new AccountItem("New", "new test description", new Date(), false));
+                dataStorage.getSelectedGroup().addItem(objectFactory.getNewAccountItem());
                 adapter.notifyDataSetChanged();
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //       .setAction("Action", null).show();
@@ -103,7 +101,7 @@ public class MainTimeActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.btnMenuMainNewGroup) {
-            dataStorage.getSelectedGroup().addItem(new GroupItem("New Group", "", new Date(), false));
+            dataStorage.getSelectedGroup().addItem(objectFactory.getNewGroupItem());
             return true;
         }
 

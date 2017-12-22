@@ -1,6 +1,6 @@
 package com.ti_zero.com.apptime.data.objects;
 
-import com.ti_zero.com.apptime.data.objects.helper.ObjectHelper;
+import com.ti_zero.com.apptime.data.objects.factories.ObjectFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,7 +73,7 @@ public class GroupItem extends AbstractItem {
     public void addTimeEntry() {
         if (getStandardAccountItem() == null) {
             //TODO show toast or snackbar, that accountitem got created
-            addItem(ObjectHelper.getNewAccountItem());
+            addItem(new ObjectFactory().getNewAccountItem());
         }
         getStandardAccountItem().addTimeEntry();
     }
