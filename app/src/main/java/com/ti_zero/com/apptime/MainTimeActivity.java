@@ -14,7 +14,9 @@ import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ti_zero.com.apptime.data.DataStorage;
+import com.ti_zero.com.apptime.data.DataAccessFacade;
+import com.ti_zero.com.apptime.data.DataInMemoryStorage;
+import com.ti_zero.com.apptime.data.dao.db.AppDatabase;
 import com.ti_zero.com.apptime.data.objects.GroupItem;
 import com.ti_zero.com.apptime.data.objects.factories.ObjectFactory;
 import com.ti_zero.com.apptime.helper.LogTag;
@@ -24,7 +26,8 @@ import com.ti_zero.com.apptime.ui.AccountItemArrayAdapter;
 public class MainTimeActivity extends AppCompatActivity {
 
     public static final String ITEM_UUID = "GroupItemUUID";
-    private static DataStorage dataStorage = new DataStorage();
+    private static DataInMemoryStorage dataInMemoryStorage =new DataInMemoryStorage();
+    private static DataAccessFacade dataAccessFacade;
     private ObjectFactory objectFactory = new ObjectFactory();
     private AccountItemArrayAdapter adapter;
     private GroupItem selectedGroupItem;
@@ -32,21 +35,24 @@ public class MainTimeActivity extends AppCompatActivity {
 
     public MainTimeActivity() {
         super();
+        if(dataAccessFacade==null) {
+            dataAccessFacade = new DataAccessFacade(AppDatabase.getDatabase(getApplicationContext()));
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //we cannot pass an object here, because it gets serialized and we get a new instance her. That's bad in a tree which works with references
-        String selectedGroupUUID = getIntent().getStringExtra(ITEM_UUID);
-        if(selectedGroupUUID == null) {
-            selectedGroupItem = dataStorage.getRootItem();
+        long selectedGroupUUID = getIntent().getLongExtra(ITEM_UUID, -1);
+        if(selectedGroupUUID == -1) {
+            selectedGroupItem = dataInMemoryStorage.getRootItem();
         } else {
-            selectedGroupItem = (GroupItem)dataStorage.findItem(selectedGroupUUID);
+            selectedGroupItem = (GroupItem) dataInMemoryStorage.findItem(selectedGroupUUID);
         }
         Logging.logInfo(LogTag.UI,"MainTimeActivity created with UUID: "+ selectedGroupItem.getUniqueID());
         adapter = new AccountItemArrayAdapter(this,
-                android.R.layout.simple_expandable_list_item_1, selectedGroupItem.getChildren(), dataStorage);
+                android.R.layout.simple_expandable_list_item_1, selectedGroupItem.getChildren(), dataInMemoryStorage);
         setContentView(R.layout.activity_main_time);
 
 
@@ -121,7 +127,7 @@ public class MainTimeActivity extends AppCompatActivity {
         } else if (id == R.id.action_exportToJson) {
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
-            //System.out.println(gson.toJson(dataStorage.getRootItem())); not working circular dependencies, wait for entities
+            //System.out.println(gson.toJson(dataInMemoryStorage.getRootItem())); not working circular dependencies, wait for entities
         }
 
         return super.onOptionsItemSelected(item);

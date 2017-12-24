@@ -7,7 +7,6 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import com.ti_zero.com.apptime.data.dao.db.entities.TimeEntity;
-import com.ti_zero.com.apptime.data.objects.TimeEntry;
 
 import java.util.List;
 
@@ -32,6 +31,6 @@ public interface TimeEntityDao {
     void updateTimeEntity(TimeEntity timeEntity);
 
     @Query("delete from timeentity where timeEntityId=:timeEntityId")
-    void deleteTimeEntity(TimeEntity timeEntity);
+    void deleteTimeEntity(long timeEntityId);
 
 }

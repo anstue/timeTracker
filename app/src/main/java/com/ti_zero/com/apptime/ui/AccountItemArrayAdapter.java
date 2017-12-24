@@ -1,19 +1,14 @@
 package com.ti_zero.com.apptime.ui;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.SystemClock;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,16 +19,13 @@ import android.widget.EditText;
 
 import com.ti_zero.com.apptime.MainTimeActivity;
 import com.ti_zero.com.apptime.R;
-import com.ti_zero.com.apptime.data.DataStorage;
+import com.ti_zero.com.apptime.data.DataInMemoryStorage;
 import com.ti_zero.com.apptime.data.objects.AbstractItem;
 import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
 import com.ti_zero.com.apptime.ui.dto.ItemRowPair;
 
 import java.util.List;
-import java.util.Random;
-
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 /**
  * Created by uni on 12/22/17.
@@ -46,14 +38,14 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
     private final Context context;
     private final List<AbstractItem> items;
     private ItemRowPair runningItemRowPair;
-    private DataStorage dataStorage;
+    private DataInMemoryStorage dataInMemoryStorage;
 
     public AccountItemArrayAdapter(Context context, int textViewResourceId,
-                                   List<AbstractItem> objects, DataStorage dataStorage) {
+                                   List<AbstractItem> objects, DataInMemoryStorage dataInMemoryStorage) {
         super(context, textViewResourceId, objects);
         this.context = context;
         this.items = objects;
-        this.dataStorage = dataStorage;
+        this.dataInMemoryStorage = dataInMemoryStorage;
 
     }
 
@@ -93,7 +85,7 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
                         startItem(item, chronoTime, btnToggle, false);
                     }
 
-                    //TODO store data persistently use DataStorage and sqlite db to add stuff
+                    //TODO store data persistently use DataInMemoryStorage and sqlite db to add stuff
                     //TODO export and import in json
                     //TODO handler for toast or snackbar info(needs access to activity)
                     //TODO introduce i18n
@@ -154,11 +146,11 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
         Logging.logDebug(LogTag.UI, "startItem: " + item.getName());
         if (runningItemRowPair != null && runningItemRowPair.getItem() != item) {
             stopItem(runningItemRowPair);
-        } else if (dataStorage.getRootItem().isRunning()) {
+        } else if (dataInMemoryStorage.getRootItem().isRunning()) {
             //check rootItem maybe sth is running in another group
             //check if item itself is running(child of group)
             if(!item.isRunning()) {
-                dataStorage.getRootItem().stop();
+                dataInMemoryStorage.getRootItem().stop();
             }
             Logging.logDebug(LogTag.UI, "Stopped item over root item: " + item.getName());
         }

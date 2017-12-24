@@ -96,7 +96,7 @@ public class GroupItem extends AbstractItem {
         if (getStandardAccountItem() == null) {
             //TODO show toast or snackbar, that accountitem got created
             addItem(new ObjectFactory().getNewAccountItem());
-            Logging.logInfo(LogTag.DATA_OBJECTS,"Automatically creating new AccountItem");
+            Logging.logInfo(LogTag.DATA_OBJECTS, "Automatically creating new AccountItem");
         }
         getStandardAccountItem().addTimeEntry();
     }
@@ -121,17 +121,17 @@ public class GroupItem extends AbstractItem {
     }
 
     @Override
-    public AbstractItem findByUUID(String itemUUID) {
-        if(uniqueID.equals(itemUUID)) {
+    public AbstractItem findByUUID(long itemUUID) {
+        if (getUniqueID() == itemUUID) {
             return this;
         }
-        for(AbstractItem item: items) {
+        for (AbstractItem item : items) {
             AbstractItem temp = item.findByUUID(itemUUID);
-            if(temp!=null) {
+            if (temp != null) {
                 return temp;
             }
         }
-        return null;
+        throw new RuntimeException("Item not found by UUID");
     }
 
 }

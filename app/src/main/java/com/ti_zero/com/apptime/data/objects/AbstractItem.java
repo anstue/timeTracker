@@ -13,11 +13,11 @@ import java.util.UUID;
 
 public abstract class AbstractItem implements Serializable {
 
-    String name;
-    String description;
-    Date lastUsage;
-    boolean favorite;
-    String uniqueID = UUID.randomUUID().toString();
+    private String name;
+    private String description;
+    private Date lastUsage;
+    private boolean favorite;
+    private long uniqueID = UUID.randomUUID().getMostSignificantBits();//TODO change to a more secure method
 
     public AbstractItem(String name, String description, Date lastUsage, boolean favorite) {
         this.name = name;
@@ -62,7 +62,7 @@ public abstract class AbstractItem implements Serializable {
         this.favorite = favorite;
     }
 
-    public String getUniqueID() {
+    public long getUniqueID() {
         return uniqueID;
     }
 
@@ -83,7 +83,7 @@ public abstract class AbstractItem implements Serializable {
     public abstract AbstractItem getParent();
     public abstract void setParent(AbstractItem item);
 
-    public AbstractItem findByUUID(String itemUUID) {
+    public AbstractItem findByUUID(long itemUUID) {
         return null;
     }
 }

@@ -47,7 +47,7 @@ public class TimeEntry implements Serializable {
             end = new Date();
 
         } else {
-            throw new RuntimeException("TimeEntry already set");
+            throw new RuntimeException("TimeEntry end already set");
         }
     }
     public boolean isStopped() {

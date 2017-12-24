@@ -10,7 +10,45 @@ public abstract class AbstractItemEntity {
 
     private String name;
     private String description;
-    private Date lastUsage;
+    private long lastUsage;
     private boolean favorite;
 
+    public AbstractItemEntity(String name, String description, long lastUsage, boolean favorite) {
+        this.name = name;
+        this.description = description;
+        this.lastUsage = lastUsage;
+        this.favorite = favorite;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public long getLastUsage() {
+        return lastUsage;
+    }
+
+    public void setLastUsage(long lastUsage) {
+        this.lastUsage = lastUsage;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
 }
