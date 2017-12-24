@@ -1,5 +1,6 @@
 package com.ti_zero.com.apptime.data;
 
+import com.ti_zero.com.apptime.data.objects.AbstractItem;
 import com.ti_zero.com.apptime.data.objects.GroupItem;
 
 import java.util.ArrayList;
@@ -13,26 +14,26 @@ import java.util.List;
 public class DataStorage {
 
     GroupItem rootItem;
-    GroupItem selectedGroup;
 
     public DataStorage(GroupItem groupItem) {
         this.rootItem = groupItem;
-        this.selectedGroup = rootItem;
     }
 
     public DataStorage() {
         rootItem = new GroupItem("Standard","", new Date(), false);
-        selectedGroup = rootItem;
     }
 
     public GroupItem getRootItem() {
         return rootItem;
     }
 
-    public GroupItem getSelectedGroup() {
-        return selectedGroup;
+    /**
+     * find an item with a UUID recursively in the tree
+     * @param itemUUID
+     * @return
+     */
+    public AbstractItem findItem(String itemUUID) {
+        return rootItem.findByUUID(itemUUID);
     }
-    public void changeSelectedGroup(GroupItem groupItem) {
-        selectedGroup = groupItem;
-    }
+
 }

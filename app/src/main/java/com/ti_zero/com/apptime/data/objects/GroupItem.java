@@ -1,6 +1,8 @@
 package com.ti_zero.com.apptime.data.objects;
 
 import com.ti_zero.com.apptime.data.objects.factories.ObjectFactory;
+import com.ti_zero.com.apptime.helper.LogTag;
+import com.ti_zero.com.apptime.helper.Logging;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +29,26 @@ public class GroupItem extends AbstractItem {
         super(name, description, lastUsage, favorite);
         this.items = items;
         this.parent = parent;
+    }
+
+    public GroupItem() {
+        //for serializer
+    }
+
+    public int getStandardItemIdx() {
+        return standardItemIdx;
+    }
+
+    public void setStandardItemIdx(int standardItemIdx) {
+        this.standardItemIdx = standardItemIdx;
+    }
+
+    public List<AbstractItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<AbstractItem> items) {
+        this.items = items;
     }
 
     public void addItem(AbstractItem item) {
@@ -74,6 +96,7 @@ public class GroupItem extends AbstractItem {
         if (getStandardAccountItem() == null) {
             //TODO show toast or snackbar, that accountitem got created
             addItem(new ObjectFactory().getNewAccountItem());
+            Logging.logInfo(LogTag.DATA_OBJECTS,"Automatically creating new AccountItem");
         }
         getStandardAccountItem().addTimeEntry();
     }
@@ -97,5 +120,18 @@ public class GroupItem extends AbstractItem {
         items.remove(position);
     }
 
+    @Override
+    public AbstractItem findByUUID(String itemUUID) {
+        if(uniqueID.equals(itemUUID)) {
+            return this;
+        }
+        for(AbstractItem item: items) {
+            AbstractItem temp = item.findByUUID(itemUUID);
+            if(temp!=null) {
+                return temp;
+            }
+        }
+        return null;
+    }
 
 }

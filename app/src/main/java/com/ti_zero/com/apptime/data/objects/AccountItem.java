@@ -25,6 +25,18 @@ public class AccountItem extends AbstractItem {
         this.timeEntries = timeEntries;
     }
 
+    public AccountItem() {
+        //for serializer
+    }
+
+    public List<TimeEntry> getTimeEntries() {
+        return timeEntries;
+    }
+
+    public void setTimeEntries(List<TimeEntry> timeEntries) {
+        this.timeEntries = timeEntries;
+    }
+
     @Override
     public boolean isRunning() {
             return timeEntries.size()>0 && !getLastTimeEntry().isStopped();

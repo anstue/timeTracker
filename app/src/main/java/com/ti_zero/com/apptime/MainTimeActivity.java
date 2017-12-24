@@ -12,15 +12,22 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ti_zero.com.apptime.data.DataStorage;
+import com.ti_zero.com.apptime.data.objects.GroupItem;
 import com.ti_zero.com.apptime.data.objects.factories.ObjectFactory;
+import com.ti_zero.com.apptime.helper.LogTag;
+import com.ti_zero.com.apptime.helper.Logging;
 import com.ti_zero.com.apptime.ui.AccountItemArrayAdapter;
 
 public class MainTimeActivity extends AppCompatActivity {
 
+    public static final String ITEM_UUID = "GroupItemUUID";
     private static DataStorage dataStorage = new DataStorage();
     private ObjectFactory objectFactory = new ObjectFactory();
     private AccountItemArrayAdapter adapter;
+    private GroupItem selectedGroupItem;
 
 
     public MainTimeActivity() {
@@ -30,10 +37,21 @@ public class MainTimeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //we cannot pass an object here, because it gets serialized and we get a new instance her. That's bad in a tree which works with references
+        String selectedGroupUUID = getIntent().getStringExtra(ITEM_UUID);
+        if(selectedGroupUUID == null) {
+            selectedGroupItem = dataStorage.getRootItem();
+        } else {
+            selectedGroupItem = (GroupItem)dataStorage.findItem(selectedGroupUUID);
+        }
+        Logging.logInfo(LogTag.UI,"MainTimeActivity created with UUID: "+ selectedGroupItem.getUniqueID());
         adapter = new AccountItemArrayAdapter(this,
-                android.R.layout.simple_expandable_list_item_1, dataStorage.getSelectedGroup().getChildren());
+                android.R.layout.simple_expandable_list_item_1, selectedGroupItem.getChildren(), dataStorage);
         setContentView(R.layout.activity_main_time);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(selectedGroupItem.getName());
         setSupportActionBar(toolbar);
         ListView accountItems = (ListView) findViewById(R.id.items);
         accountItems.setAdapter(adapter);
@@ -42,7 +60,7 @@ public class MainTimeActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dataStorage.getSelectedGroup().addItem(objectFactory.getNewAccountItem());
+                selectedGroupItem.addItem(objectFactory.getNewAccountItem());
                 adapter.notifyDataSetChanged();
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //       .setAction("Action", null).show();
@@ -63,9 +81,6 @@ public class MainTimeActivity extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
-            case R.id.btnMenuItemOpen:
-                //editNote(info.position);
-                return true;
             case R.id.btnMenuItemEdit:
                 //deleteNote(info.id);
                 return true;
@@ -78,7 +93,7 @@ public class MainTimeActivity extends AppCompatActivity {
     }
 
     private void removeItem(int position) {
-        dataStorage.getSelectedGroup().removeItem(position);
+        selectedGroupItem.removeItem(position);
         adapter.notifyDataSetChanged();
     }
 
@@ -97,15 +112,26 @@ public class MainTimeActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.btnMenuMainNewGroup) {
-            dataStorage.getSelectedGroup().addItem(objectFactory.getNewGroupItem());
+            selectedGroupItem.addItem(objectFactory.getNewGroupItem());
+            adapter.notifyDataSetChanged();
             return true;
+        } else if (id == R.id.action_exportToJson) {
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            //System.out.println(gson.toJson(dataStorage.getRootItem())); not working circular dependencies, wait for entities
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        adapter.notifyDataSetChanged();
+
     }
 
 }

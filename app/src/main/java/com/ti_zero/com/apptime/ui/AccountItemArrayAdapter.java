@@ -8,9 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.SystemClock;
+import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +24,16 @@ import android.widget.EditText;
 
 import com.ti_zero.com.apptime.MainTimeActivity;
 import com.ti_zero.com.apptime.R;
+import com.ti_zero.com.apptime.data.DataStorage;
 import com.ti_zero.com.apptime.data.objects.AbstractItem;
+import com.ti_zero.com.apptime.helper.LogTag;
+import com.ti_zero.com.apptime.helper.Logging;
 import com.ti_zero.com.apptime.ui.dto.ItemRowPair;
 
 import java.util.List;
 import java.util.Random;
+
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 /**
  * Created by uni on 12/22/17.
@@ -38,16 +46,20 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
     private final Context context;
     private final List<AbstractItem> items;
     private ItemRowPair runningItemRowPair;
+    private DataStorage dataStorage;
 
     public AccountItemArrayAdapter(Context context, int textViewResourceId,
-                                   List<AbstractItem> objects) {
+                                   List<AbstractItem> objects, DataStorage dataStorage) {
         super(context, textViewResourceId, objects);
         this.context = context;
         this.items = objects;
+        this.dataStorage = dataStorage;
+
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        Logging.logInfo(LogTag.UI, "Entering AccountItemArrayAdapter getView");
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = convertView;
@@ -62,33 +74,41 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
         final Button btnUp = (Button) rowView.findViewById(R.id.btnUp);
         final AbstractItem item = items.get(position);
         txtAccountName.setText(item.getName());
+        chronoTime.setBase(SystemClock.elapsedRealtime() - item.getTotalTime());
+        if (item.isRunning()) {
+            startItem(item, chronoTime, btnToggle, true);
+        } else {
+            stopItem(new ItemRowPair(item, btnToggle, chronoTime));
+        }
         if (firstShow) {
             if (item.getChildren() == null) {
                 btnUp.setVisibility(View.INVISIBLE);
             }
-            if (item.isRunning()) {
-                startItem(item, chronoTime, btnToggle, true);
-            } else {
-                btnToggle.setText(START);
-            }
-
             btnToggle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (item.isRunning()) {
-                        stopItem(runningItemRowPair);
+                        stopItem(new ItemRowPair(item, btnToggle, chronoTime));
                     } else {
                         startItem(item, chronoTime, btnToggle, false);
                     }
 
-                    //TODO refactor adapter and activity
                     //TODO store data persistently use DataStorage and sqlite db to add stuff
-                    //TODO logger
-                    //TODO handler for toast or snackbar info
+                    //TODO export and import in json
+                    //TODO handler for toast or snackbar info(needs access to activity)
                     //TODO introduce i18n
-                    //TODO move up and back in groups
+                    //TODO limit groups in groups to depth=5, activity stack limit!!
                 }
             });
+            btnUp.setOnClickListener(new View.OnClickListener() {
+                                         @Override
+                                         public void onClick(View view) {
+                                             Intent intent = new Intent(context, MainTimeActivity.class);
+                                             intent.putExtra(MainTimeActivity.ITEM_UUID, item.getUniqueID());
+                                             context.startActivity(intent);
+                                         }
+                                     }
+            );
             txtAccountName.addTextChangedListener(new TextWatcher() {
 
                 @Override
@@ -103,7 +123,7 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
 
                 public void afterTextChanged(Editable s) {
 
-                    if (!s.equals("")) {
+                    if (!s.toString().equals("")) {
                         item.setName(s.toString());
                     }
 
@@ -115,11 +135,14 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
     }
 
     private void stopItem(ItemRowPair itemRowPair) {
-        itemRowPair.getItem().stop();
+        if (itemRowPair.getItem().isRunning()) {
+            itemRowPair.getItem().stop();
+            Logging.logDebug(LogTag.UI, "stopItem: " + itemRowPair.getItem().getName());
+        }
         itemRowPair.getBtnToggle().setText(START);
         itemRowPair.getChronoTime().stop();
         removeNotification();
-        runningItemRowPair=null;
+        runningItemRowPair = null;
     }
 
     private void removeNotification() {
@@ -128,10 +151,18 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
     }
 
     private void startItem(AbstractItem item, Chronometer chronoTime, Button btnToggle, boolean existingTimeEntry) {
-        if (runningItemRowPair != null) {
+        Logging.logDebug(LogTag.UI, "startItem: " + item.getName());
+        if (runningItemRowPair != null && runningItemRowPair.getItem() != item) {
             stopItem(runningItemRowPair);
+        } else if (dataStorage.getRootItem().isRunning()) {
+            //check rootItem maybe sth is running in another group
+            //check if item itself is running(child of group)
+            if(!item.isRunning()) {
+                dataStorage.getRootItem().stop();
+            }
+            Logging.logDebug(LogTag.UI, "Stopped item over root item: " + item.getName());
         }
-        if(!existingTimeEntry) {
+        if (!existingTimeEntry) {
             item.addTimeEntry();
         }
         chronoTime.start();
@@ -142,12 +173,13 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
     }
 
     private void createNotification(AbstractItem item) {
-        //TODO only works for older android versions, consider newer ones too API 26
+        Logging.logDebug(LogTag.UI, "creating notification: " + item.getName());
+        //TODO only works for older android versions, consider newer ones too, API 26
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_launcher_background)
                         .setContentTitle("AppTime is running")
-                        .setContentText("Item: "+item.getName());
+                        .setContentText("Item: " + item.getName());
 
         Intent notificationIntent = new Intent(context, MainTimeActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
