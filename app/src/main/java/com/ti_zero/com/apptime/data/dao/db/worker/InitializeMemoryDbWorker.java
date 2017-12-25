@@ -35,11 +35,8 @@ public class InitializeMemoryDbWorker extends GenericWorkerThread {
 
     @Override
     public void run() {
-        try {
-            Thread.sleep(5000);//TODO remove
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        //appDatabase.groupEntityDao().deleteGroupEntity(ObjWithUUID.ROOT_UUID);
+
         List<GroupEntity> groupEntities = appDatabase.groupEntityDao().getGroupEntity(ObjWithUUID.ROOT_UUID);
         if (groupEntities.size() == 0) {
             //create root item

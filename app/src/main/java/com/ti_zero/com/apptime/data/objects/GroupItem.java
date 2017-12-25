@@ -146,7 +146,7 @@ public class GroupItem extends AbstractItem {
                 return temp;
             }
         }
-        throw new RuntimeException("Item not found by UUID");
+        return null;
     }
 
     public void findAndRemoveItem(long itemUUID) {

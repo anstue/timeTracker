@@ -23,7 +23,7 @@ public class DataInMemoryStorage {
     }
 
     public DataInMemoryStorage() {
-        rootItem = (GroupItem)new ObjectFactory().getRootItem();
+        rootItem = (GroupItem) new ObjectFactory().getRootItem();
     }
 
     public GroupItem getRootItem() {
@@ -36,11 +36,16 @@ public class DataInMemoryStorage {
 
     /**
      * find an item with a UUID recursively in the tree
+     *
      * @param itemUUID
      * @return
      */
     public AbstractItem findItem(long itemUUID) {
-        return rootItem.findByUUID(itemUUID);
+        AbstractItem item = rootItem.findByUUID(itemUUID);
+        if (item != null) {
+            return rootItem.findByUUID(itemUUID);
+        }
+        throw new RuntimeException("Item not found by UUID");
     }
 
     public void removeItem(long itemUUID) {

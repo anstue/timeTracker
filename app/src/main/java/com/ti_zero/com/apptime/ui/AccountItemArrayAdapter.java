@@ -88,13 +88,10 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
 
                 }
             });
-            btnUp.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            btnUp.setOnClickListener((View view) -> {
                     Intent intent = new Intent(context, MainTimeActivity.class);
                     intent.putExtra(MainTimeActivity.ITEM_UUID, item.getUniqueID());
                     context.startActivity(intent);
-                }
             });
             txtAccountName.addTextChangedListener(new TextWatcher() {
 
@@ -112,6 +109,7 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
 
                     if (!s.toString().equals("")) {
                         item.setName(s.toString());
+                        dataAccessFacade.changeItem(item);
                     }
 
                 }
