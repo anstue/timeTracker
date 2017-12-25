@@ -1,9 +1,15 @@
 package com.ti_zero.com.apptime.data;
 
+import android.app.Application;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
+import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.ti_zero.com.apptime.AppExecutors;
 import com.ti_zero.com.apptime.data.dao.db.AppDatabase;
 import com.ti_zero.com.apptime.data.dao.db.entities.AccountEntity;
 import com.ti_zero.com.apptime.data.dao.db.entities.GroupEntity;
@@ -32,39 +38,38 @@ public class DataAccessFacade implements IDataAccessFacade {
     private final DataInMemoryStorage dataInMemoryStorage;
     private final AppDatabase appDatabase;
 
-    private Handler dbWorkerHandler;
+    private AppExecutors appExecutors;
 
-    public DataAccessFacade(AppDatabase appDatabase) {
-        this.appDatabase = appDatabase;
+    public DataAccessFacade(Context applicationContext) {
+        appExecutors = new AppExecutors();
+        this.appDatabase = AppDatabase.getDatabase(applicationContext, appExecutors);
         this.dataInMemoryStorage = new DataInMemoryStorage();
-        HandlerThread thread = new HandlerThread("DbWorkerThread");
-        thread.start();
-        dbWorkerHandler = new Handler(thread.getLooper());
+
+        initialize();
     }
 
     public DataInMemoryStorage getDataInMemoryStorage() {
         return dataInMemoryStorage;
     }
 
-    @Override
-    public void initialize() {
-        dbWorkerHandler.post(new InitializeMemoryDbWorker(appDatabase));
+    private void initialize() {
+        appExecutors.diskIO().execute(new InitializeMemoryDbWorker(appDatabase, dataInMemoryStorage));
     }
 
     @Override
-    public boolean isInitialized() {
+    public MutableLiveData<Boolean> isInitialized() {
         return appDatabase.isInitialized();
     }
 
     @Override
     public void createNewItem(GroupItem parent, AbstractItem item) {
         parent.addItem(item);
-        dbWorkerHandler.post(new CreateNewItemDbWorker(parent, item, appDatabase));
+        appExecutors.diskIO().execute(new CreateNewItemDbWorker(parent, item, appDatabase));
     }
 
     @Override
     public void changeItem(AbstractItem item) {
-        dbWorkerHandler.post(new ChangeItemDbWorker(item, appDatabase));
+        appExecutors.diskIO().execute(new ChangeItemDbWorker(item, appDatabase));
     }
 
     @Override
@@ -75,22 +80,22 @@ public class DataAccessFacade implements IDataAccessFacade {
     }
 
     private void removeItemFromDB(AbstractItem item) {
-        dbWorkerHandler.post(new RemoveItemDbWorker(appDatabase, item));
+        appExecutors.diskIO().execute(new RemoveItemDbWorker(appDatabase, item));
     }
 
     @Override
     public void startItem(AbstractItem item) {
         StartItemDTO addedTo = item.addTimeEntry();
         if (addedTo.isNewItem()) {
-            dbWorkerHandler.post(new CreateNewItemDbWorker(addedTo.getItem().getParent(), addedTo.getItem(), appDatabase));
+            appExecutors.diskIO().execute(new CreateNewItemDbWorker(addedTo.getItem().getParent(), addedTo.getItem(), appDatabase));
         }
-        dbWorkerHandler.post(new NewTimeEntryDbWorker(appDatabase, addedTo.getItem()));
+        appExecutors.diskIO().execute(new NewTimeEntryDbWorker(appDatabase, addedTo.getItem()));
     }
 
     @Override
     public void stopItem(AbstractItem item) {
         AccountItem addedTo = item.stop();
-        dbWorkerHandler.post(new ChangeTimeEntryDbWorker(appDatabase, addedTo));
+        appExecutors.diskIO().execute(new ChangeTimeEntryDbWorker(appDatabase, addedTo));
     }
 
     @Override

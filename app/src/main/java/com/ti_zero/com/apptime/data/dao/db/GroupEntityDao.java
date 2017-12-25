@@ -37,4 +37,6 @@ public interface GroupEntityDao {
     @Query("delete from groupentity")
     void removeAll();
 
+    @Query("select * from groupentity where parentGroupEntityId = :groupEntityId")
+    List<GroupEntity> getGroupEntities(long groupEntityId);
 }

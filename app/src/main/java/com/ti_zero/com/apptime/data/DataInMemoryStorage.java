@@ -30,6 +30,10 @@ public class DataInMemoryStorage {
         return rootItem;
     }
 
+    public void setRootItem(GroupItem rootItem) {
+        this.rootItem = rootItem;
+    }
+
     /**
      * find an item with a UUID recursively in the tree
      * @param itemUUID

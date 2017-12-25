@@ -20,6 +20,10 @@ public class AccountItem extends AbstractItem {
         super(name, description, lastUsage, favorite);
         timeEntries = new ArrayList<>();
     }
+    public AccountItem(String name, String description, Date lastUsage, boolean favorite, long uuid) {
+        super(name, description, lastUsage, favorite, uuid);
+        timeEntries = new ArrayList<>();
+    }
 
     public AccountItem(String name, String description, Date lastUsage, boolean favorite, List<TimeEntry> timeEntries) {
         super(name, description, lastUsage, favorite);

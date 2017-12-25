@@ -21,6 +21,12 @@ public class TimeEntry extends ObjWithUUID implements Serializable {
         this.end = end;
     }
 
+    public TimeEntry(Date start, Date end,long uuid) {
+        super(uuid);
+        this.start = start;
+        this.end = end;
+    }
+
     public TimeEntry() {
         //for serializer
     }

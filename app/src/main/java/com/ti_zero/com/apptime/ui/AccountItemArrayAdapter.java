@@ -86,25 +86,16 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
                         startItem(item, chronoTime, btnToggle, false);
                     }
 
-                    //TODO store data persistently use DataInMemoryStorage and sqlite db to add stuff
-                    //TODO export and import in json
-                    //TODO handler for toast or snackbar info(needs access to activity)
-                    //TODO introduce i18n
-                    //TODO limit groups in groups to depth=5, activity stack limit!!
-                    //TODO remove and move timeentries
-                    //TODO set timeEntry manuelly
-                    //TODO loading activity until DataAccessFacade initialized
                 }
             });
             btnUp.setOnClickListener(new View.OnClickListener() {
-                                         @Override
-                                         public void onClick(View view) {
-                                             Intent intent = new Intent(context, MainTimeActivity.class);
-                                             intent.putExtra(MainTimeActivity.ITEM_UUID, item.getUniqueID());
-                                             context.startActivity(intent);
-                                         }
-                                     }
-            );
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, MainTimeActivity.class);
+                    intent.putExtra(MainTimeActivity.ITEM_UUID, item.getUniqueID());
+                    context.startActivity(intent);
+                }
+            });
             txtAccountName.addTextChangedListener(new TextWatcher() {
 
                 @Override
@@ -153,7 +144,7 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
         } else if (dataAccessFacade.getDataInMemoryStorage().getRootItem().isRunning()) {
             //check rootItem maybe sth is running in another group
             //check if item itself is running(child of group)
-            if(!item.isRunning()) {
+            if (!item.isRunning()) {
                 dataAccessFacade.stopItem(dataAccessFacade.getDataInMemoryStorage().getRootItem());
                 Logging.logDebug(LogTag.UI, "Stopped item over root item: " + item.getName());
             }

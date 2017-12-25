@@ -22,6 +22,6 @@ public class ObjectFactory {
     }
 
     public AbstractItem getRootItem() {
-        return new GroupItem("New Group", "", new Date(), false, ObjWithUUID.ROOT_UUID);
+        return new GroupItem("Root", "", new Date(), false, ObjWithUUID.ROOT_UUID);
     }
 }

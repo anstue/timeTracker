@@ -118,7 +118,7 @@ public class GroupItem extends AbstractItem {
 
     @Override
     public List<AbstractItem> getChildren() {
-        return Collections.unmodifiableList(items);
+        return items;
     }
 
     @Override

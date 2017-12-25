@@ -1,5 +1,7 @@
 package com.ti_zero.com.apptime.data;
 
+import android.arch.lifecycle.MutableLiveData;
+
 import com.ti_zero.com.apptime.data.objects.AbstractItem;
 import com.ti_zero.com.apptime.data.objects.AccountItem;
 import com.ti_zero.com.apptime.data.objects.GroupItem;
@@ -10,8 +12,7 @@ import com.ti_zero.com.apptime.data.objects.GroupItem;
 
 public interface IDataAccessFacade {
 
-    void initialize();
-    boolean isInitialized();
+    MutableLiveData<Boolean> isInitialized();
 
     void createNewItem(GroupItem parent, AbstractItem item);
     void changeItem(AbstractItem item);

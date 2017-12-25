@@ -1,5 +1,6 @@
 package com.ti_zero.com.apptime;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +16,6 @@ import android.widget.ListView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ti_zero.com.apptime.data.DataAccessFacade;
-import com.ti_zero.com.apptime.data.DataInMemoryStorage;
-import com.ti_zero.com.apptime.data.dao.db.AppDatabase;
 import com.ti_zero.com.apptime.data.objects.GroupItem;
 import com.ti_zero.com.apptime.data.objects.factories.ObjectFactory;
 import com.ti_zero.com.apptime.helper.LogTag;
@@ -39,25 +38,38 @@ public class MainTimeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(dataAccessFacade==null) {
-            dataAccessFacade = new DataAccessFacade(AppDatabase.getDatabase(getApplicationContext()));
-            dataAccessFacade.initialize();
+        if (dataAccessFacade == null) {
+            setContentView(R.layout.activity_loading);
+            dataAccessFacade = new DataAccessFacade(getApplicationContext());
+            Logging.logInfo(LogTag.UI, "MainTimeActivity waits for DataAccessFacade: ");
+            dataAccessFacade.isInitialized().observe(this, (Boolean initialized) -> {
+                if (initialized != null && initialized) {
+                    initializeView();
+                }
+            });
+
+        } else {
+            initializeView();
         }
+    }
+
+
+    private void initializeView() {
+        setContentView(R.layout.activity_main_time);
         //we cannot pass an object here, because it gets serialized and we get a new instance her. That's bad in a tree which works with references
         final long selectedGroupUUID = getIntent().getLongExtra(ITEM_UUID, -1);
-        if(selectedGroupUUID == -1) {
+
+        if (selectedGroupUUID == -1) {
             selectedGroupItem = dataAccessFacade.getDataInMemoryStorage().getRootItem();
         } else {
             selectedGroupItem = (GroupItem) dataAccessFacade.getDataInMemoryStorage().findItem(selectedGroupUUID);
         }
-        Logging.logInfo(LogTag.UI,"MainTimeActivity created with UUID: "+ selectedGroupItem.getUniqueID());
-        adapter = new AccountItemArrayAdapter(this,
-                android.R.layout.simple_expandable_list_item_1, selectedGroupItem.getChildren(), dataAccessFacade);
-        setContentView(R.layout.activity_main_time);
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(selectedGroupItem.getName());
+
+        adapter = new AccountItemArrayAdapter(this,
+                android.R.layout.simple_expandable_list_item_1, selectedGroupItem.getChildren(), dataAccessFacade);
+
         setSupportActionBar(toolbar);
         ListView accountItems = (ListView) findViewById(R.id.items);
         accountItems.setAdapter(adapter);
@@ -72,7 +84,7 @@ public class MainTimeActivity extends AppCompatActivity {
                 //       .setAction("Action", null).show();
             }
         });
-
+        Logging.logInfo(LogTag.UI, "MainTimeActivity created with UUID: " + selectedGroupItem.getUniqueID());
     }
 
     @Override
@@ -134,10 +146,11 @@ public class MainTimeActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
-
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
 }
