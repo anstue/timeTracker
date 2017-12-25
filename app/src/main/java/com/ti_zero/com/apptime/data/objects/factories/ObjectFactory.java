@@ -3,6 +3,7 @@ package com.ti_zero.com.apptime.data.objects.factories;
 import com.ti_zero.com.apptime.data.objects.AbstractItem;
 import com.ti_zero.com.apptime.data.objects.AccountItem;
 import com.ti_zero.com.apptime.data.objects.GroupItem;
+import com.ti_zero.com.apptime.data.objects.ObjWithUUID;
 
 import java.util.Date;
 
@@ -18,5 +19,9 @@ public class ObjectFactory {
 
     public AbstractItem getNewGroupItem() {
         return new GroupItem("New Group", "", new Date(), false);
+    }
+
+    public AbstractItem getRootItem() {
+        return new GroupItem("New Group", "", new Date(), false, ObjWithUUID.ROOT_UUID);
     }
 }

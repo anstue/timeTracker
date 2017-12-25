@@ -17,7 +17,7 @@ import java.util.Date;
             @ForeignKey(
                     entity = GroupEntity.class,
                     parentColumns = "groupEntityId",
-                    childColumns = "groupEntityId",
+                    childColumns = "parentGroupEntityId",
                     onDelete = ForeignKey.CASCADE
             )},
         indices = { @Index(value = "groupEntityId")})
@@ -26,9 +26,12 @@ public class GroupEntity extends AbstractItemEntity {
     @PrimaryKey
     private long groupEntityId;
 
-    public GroupEntity(String name, String description, long lastUsage, boolean favorite, long groupEntityId) {
+    private Long parentGroupEntityId;
+
+    public GroupEntity(String name, String description, long lastUsage, boolean favorite, long groupEntityId, Long parentGroupEntityId) {
         super(name, description, lastUsage, favorite);
         this.groupEntityId = groupEntityId;
+        this.parentGroupEntityId = parentGroupEntityId;
     }
 
     public long getGroupEntityId() {
@@ -37,5 +40,13 @@ public class GroupEntity extends AbstractItemEntity {
 
     public void setGroupEntityId(long groupEntityId) {
         this.groupEntityId = groupEntityId;
+    }
+
+    public Long getParentGroupEntityId() {
+        return parentGroupEntityId;
+    }
+
+    public void setParentGroupEntityId(Long parentGroupEntityId) {
+        this.parentGroupEntityId = parentGroupEntityId;
     }
 }

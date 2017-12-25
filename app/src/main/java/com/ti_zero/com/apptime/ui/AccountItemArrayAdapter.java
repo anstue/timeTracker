@@ -19,6 +19,7 @@ import android.widget.EditText;
 
 import com.ti_zero.com.apptime.MainTimeActivity;
 import com.ti_zero.com.apptime.R;
+import com.ti_zero.com.apptime.data.DataAccessFacade;
 import com.ti_zero.com.apptime.data.DataInMemoryStorage;
 import com.ti_zero.com.apptime.data.objects.AbstractItem;
 import com.ti_zero.com.apptime.helper.LogTag;
@@ -38,14 +39,14 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
     private final Context context;
     private final List<AbstractItem> items;
     private ItemRowPair runningItemRowPair;
-    private DataInMemoryStorage dataInMemoryStorage;
+    private DataAccessFacade dataAccessFacade;
 
     public AccountItemArrayAdapter(Context context, int textViewResourceId,
-                                   List<AbstractItem> objects, DataInMemoryStorage dataInMemoryStorage) {
+                                   List<AbstractItem> objects, DataAccessFacade dataAccessFacade) {
         super(context, textViewResourceId, objects);
         this.context = context;
         this.items = objects;
-        this.dataInMemoryStorage = dataInMemoryStorage;
+        this.dataAccessFacade = dataAccessFacade;
 
     }
 
@@ -90,6 +91,9 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
                     //TODO handler for toast or snackbar info(needs access to activity)
                     //TODO introduce i18n
                     //TODO limit groups in groups to depth=5, activity stack limit!!
+                    //TODO remove and move timeentries
+                    //TODO set timeEntry manuelly
+                    //TODO loading activity until DataAccessFacade initialized
                 }
             });
             btnUp.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +132,7 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
 
     private void stopItem(ItemRowPair itemRowPair) {
         if (itemRowPair.getItem().isRunning()) {
-            itemRowPair.getItem().stop();
+            dataAccessFacade.stopItem(itemRowPair.getItem());
             Logging.logDebug(LogTag.UI, "stopItem: " + itemRowPair.getItem().getName());
         }
         itemRowPair.getBtnToggle().setText(START);
@@ -146,16 +150,16 @@ public class AccountItemArrayAdapter extends ArrayAdapter<AbstractItem> {
         Logging.logDebug(LogTag.UI, "startItem: " + item.getName());
         if (runningItemRowPair != null && runningItemRowPair.getItem() != item) {
             stopItem(runningItemRowPair);
-        } else if (dataInMemoryStorage.getRootItem().isRunning()) {
+        } else if (dataAccessFacade.getDataInMemoryStorage().getRootItem().isRunning()) {
             //check rootItem maybe sth is running in another group
             //check if item itself is running(child of group)
             if(!item.isRunning()) {
-                dataInMemoryStorage.getRootItem().stop();
+                dataAccessFacade.stopItem(dataAccessFacade.getDataInMemoryStorage().getRootItem());
+                Logging.logDebug(LogTag.UI, "Stopped item over root item: " + item.getName());
             }
-            Logging.logDebug(LogTag.UI, "Stopped item over root item: " + item.getName());
         }
         if (!existingTimeEntry) {
-            item.addTimeEntry();
+            dataAccessFacade.startItem(item);
         }
         chronoTime.start();
         chronoTime.setBase(SystemClock.elapsedRealtime() - item.getTotalTime());

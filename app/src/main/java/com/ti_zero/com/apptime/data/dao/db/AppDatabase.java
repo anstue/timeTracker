@@ -15,7 +15,7 @@ import com.ti_zero.com.apptime.data.dao.db.entities.TimeEntity;
 
 
 @Database(entities = {AccountEntity.class,  TimeEntity.class, GroupEntity.class
-}, version = 1, exportSchema = false)
+}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase INSTANCE;
@@ -23,6 +23,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract AccountEntityDao accountEntityDao();
     public abstract GroupEntityDao groupEntityDao();
     public abstract TimeEntityDao timeEntityDao();
+
+    private volatile boolean initialized=false;
 
     public static AppDatabase getDatabase(Context context) {
         if (INSTANCE == null) {
@@ -36,5 +38,24 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public static void destroyInstance() {
         INSTANCE = null;
+    }
+
+    public static AppDatabase getINSTANCE() {
+        return INSTANCE;
+    }
+
+    public static void setINSTANCE(AppDatabase INSTANCE) {
+        AppDatabase.INSTANCE = INSTANCE;
+    }
+
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    /**
+     * you can only set it to true
+     */
+    public void setInitialized() {
+        this.initialized = true;
     }
 }

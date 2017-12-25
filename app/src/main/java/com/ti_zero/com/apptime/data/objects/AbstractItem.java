@@ -1,5 +1,6 @@
 package com.ti_zero.com.apptime.data.objects;
 
+import com.ti_zero.com.apptime.data.dto.StartItemDTO;
 import com.ti_zero.com.apptime.helper.DurationPrinter;
 
 import java.io.Serializable;
@@ -11,15 +12,23 @@ import java.util.UUID;
  * Created by uni on 12/22/17.
  */
 
-public abstract class AbstractItem implements Serializable {
+public abstract class AbstractItem extends ObjWithUUID implements Serializable {
 
     private String name;
     private String description;
     private Date lastUsage;
     private boolean favorite;
-    private long uniqueID = UUID.randomUUID().getMostSignificantBits();//TODO change to a more secure method
+
 
     public AbstractItem(String name, String description, Date lastUsage, boolean favorite) {
+        this.name = name;
+        this.description = description;
+        this.lastUsage = lastUsage;
+        this.favorite = favorite;
+    }
+
+    public AbstractItem(String name, String description, Date lastUsage, boolean favorite, long uuid) {
+        super(uuid);
         this.name = name;
         this.description = description;
         this.lastUsage = lastUsage;
@@ -62,10 +71,6 @@ public abstract class AbstractItem implements Serializable {
         this.favorite = favorite;
     }
 
-    public long getUniqueID() {
-        return uniqueID;
-    }
-
     @Override
     public String toString() {
         return name;
@@ -77,11 +82,16 @@ public abstract class AbstractItem implements Serializable {
 
     public abstract long getTotalTime();
     public abstract boolean isRunning();
-    public abstract void stop();
-    public abstract void addTimeEntry();
+    public abstract AccountItem stop();
+
+    /**
+     *
+     * @return item where timeEntry is added
+     */
+    public abstract StartItemDTO addTimeEntry();
     public abstract List<AbstractItem> getChildren();
-    public abstract AbstractItem getParent();
-    public abstract void setParent(AbstractItem item);
+    public abstract GroupItem getParent();
+    public abstract void setParent(GroupItem item);
 
     public AbstractItem findByUUID(long itemUUID) {
         return null;

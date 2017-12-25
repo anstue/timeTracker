@@ -1,5 +1,6 @@
 package com.ti_zero.com.apptime.data.objects;
 
+import com.ti_zero.com.apptime.data.dto.StartItemDTO;
 import com.ti_zero.com.apptime.helper.DurationPrinter;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
 public class AccountItem extends AbstractItem {
 
     private volatile List<TimeEntry> timeEntries;
-    private AbstractItem parent;
+    private GroupItem parent;
 
     public AccountItem(String name, String description, Date lastUsage, boolean favorite) {
         super(name, description, lastUsage, favorite);
@@ -41,22 +42,24 @@ public class AccountItem extends AbstractItem {
     public boolean isRunning() {
             return timeEntries.size()>0 && !getLastTimeEntry().isStopped();
     }
-    public void stop() {
+    public AccountItem stop() {
         if(timeEntries.size()>0) {
             getLastTimeEntry().stop();
         }
+        return this;
     }
 
-    private TimeEntry getLastTimeEntry() {
+    public TimeEntry getLastTimeEntry() {
         return timeEntries.get(timeEntries.size()-1);
     }
 
-    public void addTimeEntry(){
+    public StartItemDTO addTimeEntry(){
         //make sure only one timeEntry is running
         if(timeEntries.size()>0 && !getLastTimeEntry().isStopped()) {
             getLastTimeEntry().stop();
         }
         timeEntries.add(new TimeEntry(new Date()));
+        return new StartItemDTO(this, false);
     }
 
     @Override
@@ -65,12 +68,12 @@ public class AccountItem extends AbstractItem {
     }
 
     @Override
-    public AbstractItem getParent() {
+    public GroupItem getParent() {
         return parent;
     }
 
     @Override
-    public void setParent(AbstractItem item) {
+    public void setParent(GroupItem item) {
         this.parent=item;
     }
 

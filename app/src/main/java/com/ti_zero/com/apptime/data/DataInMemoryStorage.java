@@ -3,6 +3,8 @@ package com.ti_zero.com.apptime.data;
 import com.ti_zero.com.apptime.data.dao.db.AppDatabase;
 import com.ti_zero.com.apptime.data.objects.AbstractItem;
 import com.ti_zero.com.apptime.data.objects.GroupItem;
+import com.ti_zero.com.apptime.data.objects.ObjWithUUID;
+import com.ti_zero.com.apptime.data.objects.factories.ObjectFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,14 +16,14 @@ import java.util.List;
 
 public class DataInMemoryStorage {
 
-    GroupItem rootItem;
+    private GroupItem rootItem;
 
     public DataInMemoryStorage(GroupItem groupItem) {
         this.rootItem = groupItem;
     }
 
     public DataInMemoryStorage() {
-        rootItem = new GroupItem("Standard","", new Date(), false);
+        rootItem = (GroupItem)new ObjectFactory().getRootItem();
     }
 
     public GroupItem getRootItem() {
@@ -37,4 +39,7 @@ public class DataInMemoryStorage {
         return rootItem.findByUUID(itemUUID);
     }
 
+    public void removeItem(long itemUUID) {
+        rootItem.findAndRemoveItem(itemUUID);
+    }
 }

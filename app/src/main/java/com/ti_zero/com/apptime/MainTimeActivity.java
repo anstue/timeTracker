@@ -26,7 +26,6 @@ import com.ti_zero.com.apptime.ui.AccountItemArrayAdapter;
 public class MainTimeActivity extends AppCompatActivity {
 
     public static final String ITEM_UUID = "GroupItemUUID";
-    private static DataInMemoryStorage dataInMemoryStorage =new DataInMemoryStorage();
     private static DataAccessFacade dataAccessFacade;
     private ObjectFactory objectFactory = new ObjectFactory();
     private AccountItemArrayAdapter adapter;
@@ -35,24 +34,25 @@ public class MainTimeActivity extends AppCompatActivity {
 
     public MainTimeActivity() {
         super();
-        if(dataAccessFacade==null) {
-            dataAccessFacade = new DataAccessFacade(AppDatabase.getDatabase(getApplicationContext()));
-        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(dataAccessFacade==null) {
+            dataAccessFacade = new DataAccessFacade(AppDatabase.getDatabase(getApplicationContext()));
+            dataAccessFacade.initialize();
+        }
         //we cannot pass an object here, because it gets serialized and we get a new instance her. That's bad in a tree which works with references
-        long selectedGroupUUID = getIntent().getLongExtra(ITEM_UUID, -1);
+        final long selectedGroupUUID = getIntent().getLongExtra(ITEM_UUID, -1);
         if(selectedGroupUUID == -1) {
-            selectedGroupItem = dataInMemoryStorage.getRootItem();
+            selectedGroupItem = dataAccessFacade.getDataInMemoryStorage().getRootItem();
         } else {
-            selectedGroupItem = (GroupItem) dataInMemoryStorage.findItem(selectedGroupUUID);
+            selectedGroupItem = (GroupItem) dataAccessFacade.getDataInMemoryStorage().findItem(selectedGroupUUID);
         }
         Logging.logInfo(LogTag.UI,"MainTimeActivity created with UUID: "+ selectedGroupItem.getUniqueID());
         adapter = new AccountItemArrayAdapter(this,
-                android.R.layout.simple_expandable_list_item_1, selectedGroupItem.getChildren(), dataInMemoryStorage);
+                android.R.layout.simple_expandable_list_item_1, selectedGroupItem.getChildren(), dataAccessFacade);
         setContentView(R.layout.activity_main_time);
 
 
@@ -66,7 +66,7 @@ public class MainTimeActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                selectedGroupItem.addItem(objectFactory.getNewAccountItem());
+                dataAccessFacade.createNewItem(selectedGroupItem, objectFactory.getNewAccountItem());
                 adapter.notifyDataSetChanged();
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //       .setAction("Action", null).show();
@@ -99,7 +99,7 @@ public class MainTimeActivity extends AppCompatActivity {
     }
 
     private void removeItem(int position) {
-        selectedGroupItem.removeItem(position);
+        dataAccessFacade.removeItem(selectedGroupItem, position);
         adapter.notifyDataSetChanged();
     }
 
@@ -121,7 +121,7 @@ public class MainTimeActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.btnMenuMainNewGroup) {
-            selectedGroupItem.addItem(objectFactory.getNewGroupItem());
+            dataAccessFacade.createNewItem(selectedGroupItem, objectFactory.getNewGroupItem());
             adapter.notifyDataSetChanged();
             return true;
         } else if (id == R.id.action_exportToJson) {

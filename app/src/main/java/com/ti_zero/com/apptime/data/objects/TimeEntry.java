@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by uni on 12/22/17.
  */
 
-public class TimeEntry implements Serializable {
+public class TimeEntry extends ObjWithUUID implements Serializable {
 
     private Date start;
     private Date end = null;
