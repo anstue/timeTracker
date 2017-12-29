@@ -1,5 +1,6 @@
 package com.ti_zero.com.apptime.data.objects;
 
+import com.ti_zero.com.apptime.BR;
 import com.ti_zero.com.apptime.data.dto.StartItemDTO;
 import com.ti_zero.com.apptime.data.objects.factories.ObjectFactory;
 import com.ti_zero.com.apptime.helper.LogTag;
@@ -93,7 +94,9 @@ public class GroupItem extends AbstractItem {
     public AccountItem stop() {
         for (AbstractItem i : items) {
             if (i.isRunning()) {
-                return i.stop();
+                AccountItem retValue = i.stop();
+                notifyPropertyChanged(BR.btnToggleText);
+                return retValue;
             }
         }
         throw new RuntimeException("Stop called, but no item to stop");

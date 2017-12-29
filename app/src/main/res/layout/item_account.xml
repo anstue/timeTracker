@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/accountRow"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="item"
+            type="com.ti_zero.com.apptime.data.objects.AbstractItem"/>
+        <variable name="callback"
+            type="com.ti_zero.com.apptime.ui.callbacks.ItemCallback"/>
+    </data>
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardViewItem"
         android:layout_width="match_parent"
+        android:minHeight="@dimen/product_item_min_height"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:onClick="@{() ->  callback.onClick(item)}"
+        android:layout_marginStart="@dimen/item_horizontal_margin"
+        android:layout_marginEnd="@dimen/item_horizontal_margin"
+        android:orientation="horizontal"
+        app:cardUseCompatPadding="true">
 
-        <LinearLayout
+        <RelativeLayout
+            android:layout_marginStart="@dimen/item_horizontal_margin"
+            android:layout_marginEnd="@dimen/item_horizontal_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -19,9 +31,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:text="Dummy"
                 android:layout_marginEnd="@dimen/fab_margin"
+                android:onTextChanged="@{() ->  callback.onTextChanged(item)}"
                 android:maxLines="1"
+                android:text="@={item.name}"
                 android:inputType="text"
                 android:maxLength="30">
             </EditText>
@@ -30,26 +43,25 @@
                 android:id="@+id/chronoTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:focusable="false"
-                android:layout_weight="1" />
+                android:layout_below="@id/txtName"
+                android:textSize="@dimen/text_size"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:focusable="false" />
 
             <Button
                 android:id="@+id/btnToggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="5dp"
+                android:text="@{item.btnToggleText}"
+                android:onClick="@{() -> callback.onBtnClick(item)}"
+                 />
 
-            <Button
-                android:id="@+id/btnUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Up" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 
-</LinearLayout>
+</layout>
 

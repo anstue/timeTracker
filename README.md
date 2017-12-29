@@ -11,4 +11,6 @@ Android app for time tracking
 //TODO show TimeEntries of AccountItem View
 //TODO set timeEntry manually
 
-//TODO refactor to viewModels
+//TODO contextMenu should work on cardview
+//TODO make cardview look different if group
+

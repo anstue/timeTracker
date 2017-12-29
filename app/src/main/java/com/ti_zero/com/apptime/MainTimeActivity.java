@@ -1,9 +1,11 @@
 package com.ti_zero.com.apptime;
 
-import android.app.Activity;
+import android.arch.lifecycle.Lifecycle;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
@@ -11,23 +13,24 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ti_zero.com.apptime.data.DataAccessFacade;
+import com.ti_zero.com.apptime.data.objects.AbstractItem;
 import com.ti_zero.com.apptime.data.objects.GroupItem;
 import com.ti_zero.com.apptime.data.objects.factories.ObjectFactory;
 import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
-import com.ti_zero.com.apptime.ui.AccountItemArrayAdapter;
+import com.ti_zero.com.apptime.ui.ItemAdapter;
+import com.ti_zero.com.apptime.ui.callbacks.ItemCallback;
 
 public class MainTimeActivity extends AppCompatActivity {
 
     public static final String ITEM_UUID = "GroupItemUUID";
     private static DataAccessFacade dataAccessFacade;
     private ObjectFactory objectFactory = new ObjectFactory();
-    private AccountItemArrayAdapter adapter;
+    private ItemAdapter adapter;
     private GroupItem selectedGroupItem;
 
 
@@ -67,22 +70,15 @@ public class MainTimeActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(selectedGroupItem.getName());
 
-        adapter = new AccountItemArrayAdapter(this,
-                android.R.layout.simple_expandable_list_item_1, selectedGroupItem.getChildren(), dataAccessFacade);
-
+        adapter = new ItemAdapter(this, selectedGroupItem.getChildren(), dataAccessFacade, itemClickCallback);
         setSupportActionBar(toolbar);
-        ListView accountItems = (ListView) findViewById(R.id.items);
-        accountItems.setAdapter(adapter);
-        registerForContextMenu(accountItems);
+        RecyclerView recyclerViewItems = (RecyclerView) findViewById(R.id.items);
+        recyclerViewItems.setAdapter(adapter);
+        registerForContextMenu(recyclerViewItems);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addItem);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dataAccessFacade.createNewItem(selectedGroupItem, objectFactory.getNewAccountItem());
-                adapter.notifyDataSetChanged();
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //       .setAction("Action", null).show();
-            }
+        fab.setOnClickListener((View view) -> {
+            dataAccessFacade.createNewItem(selectedGroupItem, objectFactory.getNewAccountItem());
+            adapter.notifyDataSetChanged();
         });
         Logging.logInfo(LogTag.UI, "MainTimeActivity created with UUID: " + selectedGroupItem.getUniqueID());
     }
@@ -152,5 +148,36 @@ public class MainTimeActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         }
     }
+
+    private final ItemCallback itemClickCallback = new ItemCallback() {
+        @Override
+        public void onClick(AbstractItem item) {
+            Logging.logInfo(LogTag.UI, "ItemCallback called");
+            if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED) && item.getChildren() != null) {
+                Intent intent = new Intent(getApplicationContext(), MainTimeActivity.class);
+                intent.putExtra(MainTimeActivity.ITEM_UUID, item.getUniqueID());
+                getApplicationContext().startActivity(intent);
+            }
+        }
+
+        @Override
+        public void onBtnClick(AbstractItem item) {
+            Logging.logInfo(LogTag.UI, "StartStopCallback called");
+            if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+                if (item.isRunning()) {
+                    stopItem(item, getApplicationContext(), dataAccessFacade);
+                } else {
+                    startItem(item, false, getApplicationContext(), dataAccessFacade);
+                }
+            }
+        }
+
+        @Override
+        public void onTextChanged(AbstractItem item) {
+            if (!item.getName().equals("")) {
+                    dataAccessFacade.changeItem(item);
+                }
+        }
+    };
 
 }

@@ -1,5 +1,8 @@
 package com.ti_zero.com.apptime.data.objects;
 
+import android.databinding.Bindable;
+
+import com.ti_zero.com.apptime.R;
 import com.ti_zero.com.apptime.data.dto.StartItemDTO;
 import com.ti_zero.com.apptime.helper.DurationPrinter;
 
@@ -39,6 +42,7 @@ public abstract class AbstractItem extends ObjWithUUID implements Serializable {
         //for serializer
     }
 
+    @Bindable
     public String getName() {
         return name;
     }
@@ -78,6 +82,15 @@ public abstract class AbstractItem extends ObjWithUUID implements Serializable {
 
     public String getTotalTimePrettyPrint() {
         return DurationPrinter.printDuration(getTotalTime());
+    }
+
+    @Bindable
+    public String getBtnToggleText() {
+        if(isRunning()) {
+            return "Stop";
+        } else {
+            return "Start";
+        }
     }
 
     public abstract long getTotalTime();

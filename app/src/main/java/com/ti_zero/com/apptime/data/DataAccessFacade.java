@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.ti_zero.com.apptime.AppExecutors;
+import com.ti_zero.com.apptime.BR;
 import com.ti_zero.com.apptime.data.dao.db.AppDatabase;
 import com.ti_zero.com.apptime.data.dao.db.entities.AccountEntity;
 import com.ti_zero.com.apptime.data.dao.db.entities.GroupEntity;
@@ -90,12 +91,14 @@ public class DataAccessFacade implements IDataAccessFacade {
             appExecutors.diskIO().execute(new CreateNewItemDbWorker(addedTo.getItem().getParent(), addedTo.getItem(), appDatabase));
         }
         appExecutors.diskIO().execute(new NewTimeEntryDbWorker(appDatabase, addedTo.getItem()));
+        item.notifyPropertyChanged(BR.btnToggleText);
     }
 
     @Override
     public void stopItem(AbstractItem item) {
         AccountItem addedTo = item.stop();
         appExecutors.diskIO().execute(new ChangeTimeEntryDbWorker(appDatabase, addedTo));
+        item.notifyPropertyChanged(BR.btnToggleText);
     }
 
     @Override

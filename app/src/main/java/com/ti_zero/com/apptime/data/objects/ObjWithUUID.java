@@ -1,12 +1,14 @@
 package com.ti_zero.com.apptime.data.objects;
 
+import android.databinding.BaseObservable;
+
 import java.util.UUID;
 
 /**
  * Created by anstue on 12/24/17.
  */
 
-public class ObjWithUUID {
+public class ObjWithUUID extends BaseObservable {
 
     public final static long ROOT_UUID = 0;
     //root item has id of ROOT_UUID

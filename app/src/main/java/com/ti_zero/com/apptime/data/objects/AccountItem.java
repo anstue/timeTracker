@@ -1,5 +1,7 @@
 package com.ti_zero.com.apptime.data.objects;
 
+import com.ti_zero.com.apptime.BR;
+import com.ti_zero.com.apptime.R;
 import com.ti_zero.com.apptime.data.dto.StartItemDTO;
 import com.ti_zero.com.apptime.helper.DurationPrinter;
 
@@ -49,6 +51,7 @@ public class AccountItem extends AbstractItem {
     public AccountItem stop() {
         if(timeEntries.size()>0) {
             getLastTimeEntry().stop();
+            notifyPropertyChanged(BR.btnToggleText);
         }
         return this;
     }
@@ -63,6 +66,7 @@ public class AccountItem extends AbstractItem {
             getLastTimeEntry().stop();
         }
         timeEntries.add(new TimeEntry(new Date()));
+        notifyPropertyChanged(BR.btnToggleText);
         return new StartItemDTO(this, false);
     }
 
