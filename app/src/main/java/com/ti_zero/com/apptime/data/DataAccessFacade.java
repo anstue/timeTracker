@@ -26,6 +26,8 @@ import com.ti_zero.com.apptime.data.objects.AbstractItem;
 import com.ti_zero.com.apptime.data.objects.AccountItem;
 import com.ti_zero.com.apptime.data.objects.GroupItem;
 import com.ti_zero.com.apptime.data.objects.TimeEntry;
+import com.ti_zero.com.apptime.helper.LogTag;
+import com.ti_zero.com.apptime.helper.Logging;
 
 import java.util.List;
 
@@ -66,6 +68,7 @@ public class DataAccessFacade implements IDataAccessFacade {
     public void createNewItem(GroupItem parent, AbstractItem item) {
         parent.addItem(item);
         appExecutors.diskIO().execute(new CreateNewItemDbWorker(parent, item, appDatabase));
+        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "createNewItem item:"+item.getName());
     }
 
     @Override
@@ -78,6 +81,7 @@ public class DataAccessFacade implements IDataAccessFacade {
         AbstractItem item = dataInMemoryStorage.findItem(itemUUID);
         dataInMemoryStorage.removeItem(itemUUID);
         removeItemFromDB(item);
+        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "removeItemUUID item:"+item.getName());
     }
 
     private void removeItemFromDB(AbstractItem item) {
@@ -92,13 +96,16 @@ public class DataAccessFacade implements IDataAccessFacade {
         }
         appExecutors.diskIO().execute(new NewTimeEntryDbWorker(appDatabase, addedTo.getItem()));
         item.notifyPropertyChanged(BR.btnToggleText);
+        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "startItem item:"+item.getName());
     }
 
     @Override
     public void stopItem(AbstractItem item) {
         AccountItem addedTo = item.stop();
         appExecutors.diskIO().execute(new ChangeTimeEntryDbWorker(appDatabase, addedTo));
+        addedTo.notifyPropertyChanged(BR.btnToggleText);
         item.notifyPropertyChanged(BR.btnToggleText);
+        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "stopItem item:"+item.getName());
     }
 
     @Override
@@ -106,7 +113,9 @@ public class DataAccessFacade implements IDataAccessFacade {
         AbstractItem itemToRemove = groupItem.getItems().get(position);
         removeItemFromDB(itemToRemove);
         groupItem.removeItem(position);
-
+        itemToRemove.setParent(null);
+        itemToRemove.notifyPropertyChanged(BR.parent);
+        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "removeItem item:"+itemToRemove.getName());
     }
 
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
@@ -74,7 +75,6 @@ public class MainTimeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         RecyclerView recyclerViewItems = (RecyclerView) findViewById(R.id.items);
         recyclerViewItems.setAdapter(adapter);
-        registerForContextMenu(recyclerViewItems);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addItem);
         fab.setOnClickListener((View view) -> {
             dataAccessFacade.createNewItem(selectedGroupItem, objectFactory.getNewAccountItem());
@@ -82,35 +82,6 @@ public class MainTimeActivity extends AppCompatActivity {
         });
         Logging.logInfo(LogTag.UI, "MainTimeActivity created with UUID: " + selectedGroupItem.getUniqueID());
     }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-        super.onCreateContextMenu(contextMenu, view, contextMenuInfo);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_item, contextMenu);
-
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.btnMenuItemEdit:
-                //deleteNote(info.id);
-                return true;
-            case R.id.btnMenuItemRemove:
-                removeItem(info.position);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
-    }
-
-    private void removeItem(int position) {
-        dataAccessFacade.removeItem(selectedGroupItem, position);
-        adapter.notifyDataSetChanged();
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

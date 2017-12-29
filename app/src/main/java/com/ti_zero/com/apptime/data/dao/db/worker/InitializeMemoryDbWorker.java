@@ -80,16 +80,24 @@ public class InitializeMemoryDbWorker extends GenericWorkerThread {
 
     private void loadTimeEntries(AccountEntity accountEntity, AccountItem accountItem) {
         List<TimeEntity> timeEntities = appDatabase.timeEntityDao().getTimeEntities(accountEntity.getAccountEntityId());
+        int i=0;
         for (TimeEntity entity : timeEntities) {
-            insertTimeEntryIntoAccountItem(entity, accountItem);
+            insertTimeEntryIntoAccountItem(entity, accountItem, i==timeEntities.size()-1);
+            i++;
         }
+
 
     }
 
-    private void insertTimeEntryIntoAccountItem(TimeEntity entity, AccountItem parent) {
+    private void insertTimeEntryIntoAccountItem(TimeEntity entity, AccountItem parent, boolean lastEntry) {
         Date end = null;
         if (entity.getEnd() != -1) {
             end = getJavaDate(entity.getEnd());
+        } else if(!lastEntry) {
+            end = new Date();
+            entity.setEnd(end.getTime());
+            appDatabase.timeEntityDao().updateTimeEntity(entity);
+            Logging.logError(LogTag.PERSISTENZ, "TimeEntry for item was not closed correctly, closed it with NOW");
         }
         TimeEntry newTimeEntry = new TimeEntry(getJavaDate(entity.getStart()), end);
         parent.getTimeEntries().add(newTimeEntry);

@@ -8,9 +8,16 @@ Android app for time tracking
 //TODO introduce i18n
 //TODO limit groups in groups to depth=5, activity stack limit!!
 //TODO remove and move timeentries
-//TODO show TimeEntries of AccountItem View
+//TODO show TimeEntries of AccountItem View(CalendarView) for one accountItem, group and everything
 //TODO set timeEntry manually
 
-//TODO contextMenu should work on cardview
-//TODO make cardview look different if group
+//TODO edit name in dialog not directly
+
+//TODO about dialog
+
+//TODO dialog before remove
+
+//TODO bug wenn viele elemente wegen recycleview laufen mehrere gliechzeitig
+
+//TODO unit tests
 

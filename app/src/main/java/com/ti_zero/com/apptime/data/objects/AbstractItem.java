@@ -102,7 +102,9 @@ public abstract class AbstractItem extends ObjWithUUID implements Serializable {
      * @return item where timeEntry is added
      */
     public abstract StartItemDTO addTimeEntry();
+    @Bindable
     public abstract List<AbstractItem> getChildren();
+    @Bindable
     public abstract GroupItem getParent();
     public abstract void setParent(GroupItem item);
 
