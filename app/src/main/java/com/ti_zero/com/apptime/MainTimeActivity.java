@@ -2,7 +2,9 @@ package com.ti_zero.com.apptime;
 
 import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -15,8 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.ti_zero.com.apptime.data.DataAccessFacade;
 import com.ti_zero.com.apptime.data.objects.AbstractItem;
 import com.ti_zero.com.apptime.data.objects.GroupItem;
@@ -25,10 +25,15 @@ import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
 import com.ti_zero.com.apptime.ui.ItemAdapter;
 import com.ti_zero.com.apptime.ui.callbacks.ItemCallback;
+import com.ti_zero.com.apptime.ui.helper.PermissionHelper;
+
+import java.io.File;
+import java.util.Date;
 
 public class MainTimeActivity extends AppCompatActivity {
 
     public static final String ITEM_UUID = "GroupItemUUID";
+    private static final int FILE_OPEN_CODE = 1;
     private static DataAccessFacade dataAccessFacade;
     private ObjectFactory objectFactory = new ObjectFactory();
     private ItemAdapter adapter;
@@ -104,12 +109,40 @@ public class MainTimeActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
             return true;
         } else if (id == R.id.action_exportToJson) {
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-            //System.out.println(gson.toJson(dataInMemoryStorage.getRootItem())); not working circular dependencies, wait for entities
+            PermissionHelper.verifyStoragePermissions(this);
+            generateJson();
+
+        } else if (id == R.id.action_importFromJson) {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("file/*");
+            startActivityForResult(intent, FILE_OPEN_CODE);
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void generateJson() {
+        dataAccessFacade.generateJson(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/appTime" + new Date().getTime() + ".json");
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PermissionHelper.REQUEST_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    generateJson();
+                } else {
+
+                    //TODO handle permission denied
+                }
+                return;
+            }
+
+        }
     }
 
     @Override
@@ -146,8 +179,8 @@ public class MainTimeActivity extends AppCompatActivity {
         @Override
         public void onTextChanged(AbstractItem item) {
             if (!item.getName().equals("")) {
-                    dataAccessFacade.changeItem(item);
-                }
+                dataAccessFacade.changeItem(item);
+            }
         }
     };
 

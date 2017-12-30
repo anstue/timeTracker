@@ -9,6 +9,8 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ti_zero.com.apptime.AppExecutors;
 import com.ti_zero.com.apptime.BR;
 import com.ti_zero.com.apptime.data.dao.db.AppDatabase;
@@ -18,6 +20,7 @@ import com.ti_zero.com.apptime.data.dao.db.entities.TimeEntity;
 import com.ti_zero.com.apptime.data.dao.db.worker.ChangeItemDbWorker;
 import com.ti_zero.com.apptime.data.dao.db.worker.ChangeTimeEntryDbWorker;
 import com.ti_zero.com.apptime.data.dao.db.worker.CreateNewItemDbWorker;
+import com.ti_zero.com.apptime.data.dao.db.worker.DbToJsonWorker;
 import com.ti_zero.com.apptime.data.dao.db.worker.InitializeMemoryDbWorker;
 import com.ti_zero.com.apptime.data.dao.db.worker.NewTimeEntryDbWorker;
 import com.ti_zero.com.apptime.data.dao.db.worker.RemoveItemDbWorker;
@@ -29,6 +32,7 @@ import com.ti_zero.com.apptime.data.objects.TimeEntry;
 import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -42,11 +46,13 @@ public class DataAccessFacade implements IDataAccessFacade {
     private final AppDatabase appDatabase;
 
     private AppExecutors appExecutors;
+    private Context context;
 
     public DataAccessFacade(Context applicationContext) {
         appExecutors = new AppExecutors();
         this.appDatabase = AppDatabase.getDatabase(applicationContext, appExecutors);
         this.dataInMemoryStorage = new DataInMemoryStorage();
+        this.context = applicationContext;
 
         initialize();
     }
@@ -68,7 +74,7 @@ public class DataAccessFacade implements IDataAccessFacade {
     public void createNewItem(GroupItem parent, AbstractItem item) {
         parent.addItem(item);
         appExecutors.diskIO().execute(new CreateNewItemDbWorker(parent, item, appDatabase));
-        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "createNewItem item:"+item.getName());
+        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "createNewItem item:" + item.getName());
     }
 
     @Override
@@ -81,7 +87,7 @@ public class DataAccessFacade implements IDataAccessFacade {
         AbstractItem item = dataInMemoryStorage.findItem(itemUUID);
         dataInMemoryStorage.removeItem(itemUUID);
         removeItemFromDB(item);
-        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "removeItemUUID item:"+item.getName());
+        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "removeItemUUID item:" + item.getName());
     }
 
     private void removeItemFromDB(AbstractItem item) {
@@ -95,8 +101,11 @@ public class DataAccessFacade implements IDataAccessFacade {
             appExecutors.diskIO().execute(new CreateNewItemDbWorker(addedTo.getItem().getParent(), addedTo.getItem(), appDatabase));
         }
         appExecutors.diskIO().execute(new NewTimeEntryDbWorker(appDatabase, addedTo.getItem()));
+        if (addedTo.getTimeEntry() != null) {
+            appExecutors.diskIO().execute(new ChangeTimeEntryDbWorker(appDatabase, addedTo.getItem(), addedTo.getTimeEntry()));
+        }
         item.notifyPropertyChanged(BR.btnToggleText);
-        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "startItem item:"+item.getName());
+        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "startItem item:" + item.getName());
     }
 
     @Override
@@ -105,7 +114,7 @@ public class DataAccessFacade implements IDataAccessFacade {
         appExecutors.diskIO().execute(new ChangeTimeEntryDbWorker(appDatabase, addedTo));
         addedTo.notifyPropertyChanged(BR.btnToggleText);
         item.notifyPropertyChanged(BR.btnToggleText);
-        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "stopItem item:"+item.getName());
+        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "stopItem item:" + item.getName());
     }
 
     @Override
@@ -115,7 +124,17 @@ public class DataAccessFacade implements IDataAccessFacade {
         groupItem.removeItem(position);
         itemToRemove.setParent(null);
         itemToRemove.notifyPropertyChanged(BR.parent);
-        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "removeItem item:"+itemToRemove.getName());
+        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "removeItem item:" + itemToRemove.getName());
+    }
+
+    @Override
+    public void generateJson(String fileName) {
+        appExecutors.diskIO().execute(new DbToJsonWorker(appDatabase, fileName, context));
+    }
+
+    @Override
+    public void loadFromJson(File file) {
+
     }
 
 }

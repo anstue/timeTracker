@@ -17,7 +17,11 @@ Android app for time tracking
 
 //TODO dialog before remove
 
-//TODO bug wenn viele elemente wegen recycleview laufen mehrere gliechzeitig
+//TODO bug in db: stopped elements have an end of null
 
 //TODO unit tests
+
+
+//TODO order after last usage
+
 

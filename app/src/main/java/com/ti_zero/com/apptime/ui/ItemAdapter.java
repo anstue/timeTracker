@@ -23,6 +23,7 @@ import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
 import com.ti_zero.com.apptime.ui.callbacks.ItemCallback;
 import com.ti_zero.com.apptime.ui.dto.ItemRowPair;
+import com.ti_zero.com.apptime.ui.helper.NotificationHelper;
 
 import java.util.List;
 
@@ -91,34 +92,36 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         Logging.logInfo(LogTag.UI, "Entering ItemAdapter onBindViewHolder, position: " + position);
 
-            holder.getBinding().setItem(items.get(position));
-            holder.getBinding().executePendingBindings();
-            Chronometer chronoTime = holder.itemView.findViewById(R.id.chronoTime);
-            AbstractItem item = items.get(position);
-            chronoTime.setBase(SystemClock.elapsedRealtime() - item.getTotalTime());
-            if (item.isRunning()) {
-                chronoTime.start();
-            } else {
-                chronoTime.stop();
-            }
-            item.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
-                @Override
-                public void onPropertyChanged(Observable observable, int i) {
+        holder.getBinding().setItem(items.get(position));
+        holder.getBinding().executePendingBindings();
+        final Chronometer chronoTime = holder.itemView.findViewById(R.id.chronoTime);
+        AbstractItem item = items.get(position);
+        holder.itemView.setTag(R.id.chronoTime, item);
+        chronoTime.setBase(SystemClock.elapsedRealtime() - item.getTotalTime());
+        if (item.isRunning()) {
+            chronoTime.start();
+            NotificationHelper.createNotification(item, context);
+        } else {
+            chronoTime.stop();
+        }
+        item.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable observable, int i) {
+                if(holder.itemView.getTag(R.id.chronoTime)==observable) {
                     Logging.logInfo(LogTag.UI, "Entering item onPropertyChanged, property: " + i);
                     if (i == BR.btnToggleText) {
                         AbstractItem item = (AbstractItem) observable;
                         chronoTime.setBase(SystemClock.elapsedRealtime() - item.getTotalTime());
                         if (item.isRunning()) {
                             chronoTime.start();
-                            Logging.logDebug(LogTag.UI, "item onPropertyChanged: start " + item.getName());
                         } else {
                             chronoTime.stop();
-                            Logging.logDebug(LogTag.UI, "item onPropertyChanged: stop");
                         }
                         Logging.logDebug(LogTag.UI, "After item onPropertyChanged, itemName: " + item.getName());
                     }
                 }
-            });
+            }
+        });
     }
 
     @Override

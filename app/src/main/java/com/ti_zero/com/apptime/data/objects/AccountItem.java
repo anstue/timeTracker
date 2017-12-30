@@ -62,12 +62,14 @@ public class AccountItem extends AbstractItem {
 
     public StartItemDTO addTimeEntry(){
         //make sure only one timeEntry is running
+        TimeEntry timeEntry = null;
         if(timeEntries.size()>0 && !getLastTimeEntry().isStopped()) {
+            timeEntry = getLastTimeEntry();
             getLastTimeEntry().stop();
         }
         timeEntries.add(new TimeEntry(new Date()));
         notifyPropertyChanged(BR.btnToggleText);
-        return new StartItemDTO(this, false);
+        return new StartItemDTO(this, false, timeEntry);
     }
 
     @Override

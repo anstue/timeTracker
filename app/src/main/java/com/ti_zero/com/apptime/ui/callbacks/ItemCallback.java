@@ -12,14 +12,13 @@ import com.ti_zero.com.apptime.data.DataAccessFacade;
 import com.ti_zero.com.apptime.data.objects.AbstractItem;
 import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
+import com.ti_zero.com.apptime.ui.helper.NotificationHelper;
 
 /**
  * Created by anstue on 12/25/17.
  */
 
 public interface ItemCallback {
-
-    int NOTIFICATION_ID_RUNNING_ITEM = 10001;
 
     void onClick(AbstractItem item);
     void onBtnClick(AbstractItem item);
@@ -30,12 +29,7 @@ public interface ItemCallback {
             dataAccessFacade.stopItem(item);
             Logging.logDebug(LogTag.UI, "stopItem: " + item.getName());
         }
-        removeNotification(context);
-    }
-
-    default void removeNotification(Context context) {
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancel(NOTIFICATION_ID_RUNNING_ITEM);
+        NotificationHelper.removeNotification(context);
     }
 
     default void startItem(AbstractItem item, boolean existingTimeEntry, Context context, DataAccessFacade dataAccessFacade) {
@@ -51,26 +45,7 @@ public interface ItemCallback {
         if (!existingTimeEntry) {
             dataAccessFacade.startItem(item);
         }
-        createNotification(item, context);
+        NotificationHelper.createNotification(item, context);
     }
 
-    default void createNotification(AbstractItem item, Context context) {
-        Logging.logDebug(LogTag.UI, "creating notification: " + item.getName());
-        //TODO only works for older android versions, consider newer ones too, API 26
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.ic_launcher_background)
-                        .setContentTitle("AppTime is running")
-                        .setContentText("Item: " + item.getName());
-
-        Intent notificationIntent = new Intent(context, MainTimeActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(contentIntent);
-
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(NOTIFICATION_ID_RUNNING_ITEM, builder.build());
-
-
-    }
 }

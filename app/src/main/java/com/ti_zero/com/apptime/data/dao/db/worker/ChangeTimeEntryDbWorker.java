@@ -15,17 +15,27 @@ public class ChangeTimeEntryDbWorker extends GenericWorkerThread {
 
     private AppDatabase appDatabase;
     private AccountItem item;
+    private TimeEntry timeEntry = null;
 
     public ChangeTimeEntryDbWorker(AppDatabase appDatabase, AccountItem item) {
         this.appDatabase = appDatabase;
         this.item = item;
     }
 
+    public ChangeTimeEntryDbWorker(AppDatabase appDatabase, AccountItem item, TimeEntry timeEntry) {
+        this.appDatabase = appDatabase;
+        this.item = item;
+        this.timeEntry = timeEntry;
+    }
+
     @Override
     public void run() {
-        TimeEntry lastTimeEntry = item.getLastTimeEntry();
-        TimeEntity timeEntity = new TimeEntity(lastTimeEntry.getUniqueID(),item.getUniqueID(),
-                lastTimeEntry.getStart().getTime(), lastTimeEntry.getEnd().getTime());
+        TimeEntry timeEntryToChange = timeEntry;
+        if (timeEntryToChange == null) {
+            timeEntryToChange = item.getLastTimeEntry();
+        }
+        TimeEntity timeEntity = new TimeEntity(timeEntryToChange.getUniqueID(), item.getUniqueID(),
+                timeEntryToChange.getStart().getTime(), timeEntryToChange.getEnd().getTime());
         appDatabase.timeEntityDao().updateTimeEntity(timeEntity);
         Logging.logInfo(LogTag.PERSISTENZ, "ChangeTimeEntryDbWorker finished");
     }
