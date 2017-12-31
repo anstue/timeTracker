@@ -52,14 +52,14 @@
                     android:maxLength="30"
                     android:maxLines="1"
                     android:onTextChanged="@{() ->  callback.onTextChanged(item)}"
-                    android:text="@={item.name}"></EditText>
+                    android:text="@={item.name}"/>
 
                 <Button
                     android:id="@+id/btnToggle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:background="@{item.running ? @color/colorPrimary: @color/colorAccent }"
+                    android:background="@{item.running ? @color/colorBtnRunning: @color/colorBtnStopped }"
                     android:layout_marginEnd="5dp"
                     android:onClick="@{() -> callback.onBtnClick(item)}"
                     android:text="@{item.btnToggleText}" />
@@ -81,7 +81,7 @@
                     android:id="@+id/chronoTimeToday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/fab_margin"
+                    android:layout_marginTop="@dimen/chrono_margin"
                     android:focusable="false"
                     android:layout_below="@id/labelChronoTimeToday"
                     android:layout_marginEnd="@dimen/fab_margin"
@@ -98,7 +98,7 @@
                     android:id="@+id/chronoTimeTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/fab_margin"
+                    android:layout_marginTop="@dimen/chrono_margin"
                     android:focusable="false"
                     android:layout_below="@id/labelChronoTimeTotal"
                     android:layout_alignParentEnd="true"

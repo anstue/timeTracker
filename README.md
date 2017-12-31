@@ -18,6 +18,7 @@ Android app for time tracking
 //TODO dialog before remove
 
 //TODO bug in db: stopped elements have an end of null
+//TODO bug very laggy
 
 //TODO unit tests
 

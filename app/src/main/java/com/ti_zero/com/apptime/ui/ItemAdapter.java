@@ -108,18 +108,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
             chronoTimeTotal.stop();
             chronoTimeToday.stop();
         }
+        //use only one tickListener per cardview
         chronoTimeTotal.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener(){
             @Override
             public void onChronometerTick(Chronometer cArg) {
                 if(item.isRunning()) {
                     item.notifyPropertyChanged(BR.totalTimePrettyPrint);
-                }
-            }
-        });
-        chronoTimeToday.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener(){
-            @Override
-            public void onChronometerTick(Chronometer cArg) {
-                if(item.isRunning()) {
                     item.notifyPropertyChanged(BR.todayTimePrettyPrint);
                 }
             }

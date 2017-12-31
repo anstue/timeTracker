@@ -99,7 +99,7 @@ public class InitializeMemoryDbWorker extends GenericWorkerThread {
             appDatabase.timeEntityDao().updateTimeEntity(entity);
             Logging.logError(LogTag.PERSISTENZ, "TimeEntry for item was not closed correctly, closed it with NOW");
         }
-        TimeEntry newTimeEntry = new TimeEntry(getJavaDate(entity.getStart()), end);
+        TimeEntry newTimeEntry = new TimeEntry(getJavaDate(entity.getStart()), end, entity.getTimeEntityId());
         parent.getTimeEntries().add(newTimeEntry);
     }
 }
