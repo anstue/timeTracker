@@ -80,8 +80,13 @@ public abstract class AbstractItem extends ObjWithUUID implements Serializable {
         return name;
     }
 
+    @Bindable
     public String getTotalTimePrettyPrint() {
         return DurationPrinter.printDuration(getTotalTime());
+    }
+    @Bindable
+    public String getTodayTimePrettyPrint() {
+        return DurationPrinter.printDuration(getTodayTime());
     }
 
     @Bindable
@@ -94,6 +99,7 @@ public abstract class AbstractItem extends ObjWithUUID implements Serializable {
     }
 
     public abstract long getTotalTime();
+    @Bindable
     public abstract boolean isRunning();
     public abstract AccountItem stop();
 
@@ -111,4 +117,6 @@ public abstract class AbstractItem extends ObjWithUUID implements Serializable {
     public AbstractItem findByUUID(long itemUUID) {
         return null;
     }
+
+    public abstract long getTodayTime();
 }

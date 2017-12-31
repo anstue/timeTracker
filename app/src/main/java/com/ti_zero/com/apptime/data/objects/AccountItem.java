@@ -4,8 +4,11 @@ import com.ti_zero.com.apptime.BR;
 import com.ti_zero.com.apptime.R;
 import com.ti_zero.com.apptime.data.dto.StartItemDTO;
 import com.ti_zero.com.apptime.helper.DurationPrinter;
+import com.ti_zero.com.apptime.helper.TimeHelper;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +25,7 @@ public class AccountItem extends AbstractItem {
         super(name, description, lastUsage, favorite);
         timeEntries = new ArrayList<>();
     }
+
     public AccountItem(String name, String description, Date lastUsage, boolean favorite, long uuid) {
         super(name, description, lastUsage, favorite, uuid);
         timeEntries = new ArrayList<>();
@@ -46,29 +50,32 @@ public class AccountItem extends AbstractItem {
 
     @Override
     public boolean isRunning() {
-            return timeEntries.size()>0 && !getLastTimeEntry().isStopped();
+        return timeEntries.size() > 0 && !getLastTimeEntry().isStopped();
     }
+
     public AccountItem stop() {
-        if(timeEntries.size()>0) {
+        if (timeEntries.size() > 0) {
             getLastTimeEntry().stop();
             notifyPropertyChanged(BR.btnToggleText);
+            notifyPropertyChanged(BR.running);
         }
         return this;
     }
 
     public TimeEntry getLastTimeEntry() {
-        return timeEntries.get(timeEntries.size()-1);
+        return timeEntries.get(timeEntries.size() - 1);
     }
 
-    public StartItemDTO addTimeEntry(){
+    public StartItemDTO addTimeEntry() {
         //make sure only one timeEntry is running
         TimeEntry timeEntry = null;
-        if(timeEntries.size()>0 && !getLastTimeEntry().isStopped()) {
+        if (timeEntries.size() > 0 && !getLastTimeEntry().isStopped()) {
             timeEntry = getLastTimeEntry();
             getLastTimeEntry().stop();
         }
         timeEntries.add(new TimeEntry(new Date()));
         notifyPropertyChanged(BR.btnToggleText);
+        notifyPropertyChanged(BR.running);
         return new StartItemDTO(this, false, timeEntry);
     }
 
@@ -84,14 +91,25 @@ public class AccountItem extends AbstractItem {
 
     @Override
     public void setParent(GroupItem item) {
-        this.parent=item;
+        this.parent = item;
+    }
+
+    @Override
+    public long getTodayTime() {
+        long todayTime = 0;
+        long todayBegin = TimeHelper.getBeginningOfTheDay().getTime();
+        long todayEnd = TimeHelper.getEndOfTheDay().getTime();
+        for (TimeEntry timeEntry : timeEntries) {
+            todayTime += TimeHelper.getTimeWithinBoundries(todayBegin, todayEnd, timeEntry);
+        }
+        return todayTime;
     }
 
     @Override
     public long getTotalTime() {
-        long sum=0;
-        for(TimeEntry t: timeEntries) {
-           sum+=t.getDuration();
+        long sum = 0;
+        for (TimeEntry t : timeEntries) {
+            sum += t.getDuration();
         }
         return sum;
     }

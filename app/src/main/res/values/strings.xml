@@ -6,5 +6,7 @@
     <string name="running_item_channel_description">Currently running item</string>
     <string name="action_export_to_json">Export to JSON</string>
     <string name="action_import_from_json">Import from JSON</string>
+    <string name="timeToday">Today</string>
+    <string name="timeTotal">Total</string>
     <string name="title_activity_calendar">CalendarActivity</string>
 </resources>

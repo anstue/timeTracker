@@ -105,6 +105,7 @@ public class DataAccessFacade implements IDataAccessFacade {
             appExecutors.diskIO().execute(new ChangeTimeEntryDbWorker(appDatabase, addedTo.getItem(), addedTo.getTimeEntry()));
         }
         item.notifyPropertyChanged(BR.btnToggleText);
+        item.notifyPropertyChanged(BR.running);
         Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "startItem item:" + item.getName());
     }
 
@@ -113,7 +114,9 @@ public class DataAccessFacade implements IDataAccessFacade {
         AccountItem addedTo = item.stop();
         appExecutors.diskIO().execute(new ChangeTimeEntryDbWorker(appDatabase, addedTo));
         addedTo.notifyPropertyChanged(BR.btnToggleText);
+        addedTo.notifyPropertyChanged(BR.running);
         item.notifyPropertyChanged(BR.btnToggleText);
+        item.notifyPropertyChanged(BR.running);
         Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "stopItem item:" + item.getName());
     }
 

@@ -96,6 +96,7 @@ public class GroupItem extends AbstractItem {
             if (i.isRunning()) {
                 AccountItem retValue = i.stop();
                 notifyPropertyChanged(BR.btnToggleText);
+                notifyPropertyChanged(BR.running);
                 return retValue;
             }
         }
@@ -150,6 +151,15 @@ public class GroupItem extends AbstractItem {
             }
         }
         return null;
+    }
+
+    @Override
+    public long getTodayTime() {
+        long sum = 0;
+        for (AbstractItem t : items) {
+            sum += t.getTodayTime();
+        }
+        return sum;
     }
 
     public void findAndRemoveItem(long itemUUID) {

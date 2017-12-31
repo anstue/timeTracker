@@ -94,28 +94,52 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
         holder.getBinding().setItem(items.get(position));
         holder.getBinding().executePendingBindings();
-        final Chronometer chronoTime = holder.itemView.findViewById(R.id.chronoTime);
+        final Chronometer chronoTimeTotal = holder.itemView.findViewById(R.id.chronoTimeTotal);
+        final Chronometer chronoTimeToday = holder.itemView.findViewById(R.id.chronoTimeToday);
         AbstractItem item = items.get(position);
-        holder.itemView.setTag(R.id.chronoTime, item);
-        chronoTime.setBase(SystemClock.elapsedRealtime() - item.getTotalTime());
+        holder.itemView.setTag(R.id.chronoTimeTotal, item);
+        chronoTimeTotal.setBase(SystemClock.elapsedRealtime() - item.getTotalTime());
+        chronoTimeToday.setBase(SystemClock.elapsedRealtime() - item.getTodayTime());
         if (item.isRunning()) {
-            chronoTime.start();
+            chronoTimeTotal.start();
+            chronoTimeToday.start();
             NotificationHelper.createNotification(item, context);
         } else {
-            chronoTime.stop();
+            chronoTimeTotal.stop();
+            chronoTimeToday.stop();
         }
+        chronoTimeTotal.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener(){
+            @Override
+            public void onChronometerTick(Chronometer cArg) {
+                if(item.isRunning()) {
+                    item.notifyPropertyChanged(BR.totalTimePrettyPrint);
+                }
+            }
+        });
+        chronoTimeToday.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener(){
+            @Override
+            public void onChronometerTick(Chronometer cArg) {
+                if(item.isRunning()) {
+                    item.notifyPropertyChanged(BR.todayTimePrettyPrint);
+                }
+            }
+        });
         item.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable observable, int i) {
-                if(holder.itemView.getTag(R.id.chronoTime)==observable) {
-                    Logging.logInfo(LogTag.UI, "Entering item onPropertyChanged, property: " + i);
+                if(holder.itemView.getTag(R.id.chronoTimeTotal)==observable) {
+                    Logging.logDebug(LogTag.UI, "Entering item onPropertyChanged, property: " + i);
                     if (i == BR.btnToggleText) {
                         AbstractItem item = (AbstractItem) observable;
-                        chronoTime.setBase(SystemClock.elapsedRealtime() - item.getTotalTime());
+                        chronoTimeTotal.setBase(SystemClock.elapsedRealtime() - item.getTotalTime());
+                        chronoTimeToday.setBase(SystemClock.elapsedRealtime() - item.getTodayTime());
                         if (item.isRunning()) {
-                            chronoTime.start();
+                            chronoTimeTotal.start();
+                            chronoTimeToday.start();
+                            NotificationHelper.createNotification(item, context);
                         } else {
-                            chronoTime.stop();
+                            chronoTimeTotal.stop();
+                            chronoTimeToday.stop();
                         }
                         Logging.logDebug(LogTag.UI, "After item onPropertyChanged, itemName: " + item.getName());
                     }

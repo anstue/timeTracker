@@ -1,5 +1,7 @@
 package com.ti_zero.com.apptime.helper;
 
+import java.util.Locale;
+
 /**
  * Created by uni on 12/22/17.
  */
@@ -7,10 +9,16 @@ package com.ti_zero.com.apptime.helper;
 public class DurationPrinter {
 
     public static String printDuration(long duration) {
-        long days = duration /1000 /60 /60 /24;
+        float days = (float)duration /1000 /60 /60 /24;
         long hours = (long)(duration /1000.0 /60 /60) % 24;
         long minutes = (long)(duration /1000.0 /60 ) % 60;
         long seconds = (long)(duration /1000.0 ) % 60;
-        return String.format("%d, %02d:%02d:%02d", days, hours, minutes, seconds);
+        if(days>=1) {
+            return String.format(Locale.US, "%.1f days", days);
+        } else if(hours>=1) {
+            return String.format(Locale.US, "%02dh%02dm", hours, minutes);
+        } else {
+            return String.format(Locale.US, "%02dm%02ds", minutes, seconds);
+        }
     }
 }

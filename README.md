@@ -21,6 +21,11 @@ Android app for time tracking
 
 //TODO unit tests
 
+//TODO mainview limit considered start dates --> setting with datepicker
+//TODO settingDB
+
+
+
 
 //TODO order after last usage
 
