@@ -8,5 +8,8 @@
     <string name="action_import_from_json">Import from JSON</string>
     <string name="timeToday">Today</string>
     <string name="timeTotal">Total</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="counting">Counting</string>
     <string name="title_activity_calendar">CalendarActivity</string>
 </resources>

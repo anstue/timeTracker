@@ -84,6 +84,7 @@ public abstract class AbstractItem extends ObjWithUUID implements Serializable {
     public String getTotalTimePrettyPrint() {
         return DurationPrinter.printDuration(getTotalTime());
     }
+
     @Bindable
     public String getTodayTimePrettyPrint() {
         return DurationPrinter.printDuration(getTodayTime());
@@ -91,7 +92,7 @@ public abstract class AbstractItem extends ObjWithUUID implements Serializable {
 
     @Bindable
     public String getBtnToggleText() {
-        if(isRunning()) {
+        if (isRunning()) {
             return "Stop";
         } else {
             return "Start";
@@ -99,23 +100,27 @@ public abstract class AbstractItem extends ObjWithUUID implements Serializable {
     }
 
     public abstract long getTotalTime();
+
     @Bindable
     public abstract boolean isRunning();
+
     public abstract AccountItem stop();
 
     /**
-     *
      * @return item where timeEntry is added
      */
     public abstract StartItemDTO addTimeEntry();
+
     @Bindable
     public abstract List<AbstractItem> getChildren();
+
     @Bindable
     public abstract GroupItem getParent();
+
     public abstract void setParent(GroupItem item);
 
     public AbstractItem findByUUID(long itemUUID) {
-        return null;
+        return itemUUID == getUniqueID() ? this : null;
     }
 
     public abstract long getTodayTime();

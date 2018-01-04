@@ -43,7 +43,7 @@ public class DataInMemoryStorage {
     public AbstractItem findItem(long itemUUID) {
         AbstractItem item = rootItem.findByUUID(itemUUID);
         if (item != null) {
-            return rootItem.findByUUID(itemUUID);
+            return item;
         }
         throw new RuntimeException("Item not found by UUID");
     }

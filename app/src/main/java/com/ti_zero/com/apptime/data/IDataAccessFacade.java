@@ -26,4 +26,6 @@ public interface IDataAccessFacade {
     void removeItem(GroupItem selectedGroupItem, int position);
     void generateJson(String fileName);
     void loadFromJson(File file);
+
+    AbstractItem findItem(long uuid);
 }

@@ -140,4 +140,9 @@ public class DataAccessFacade implements IDataAccessFacade {
 
     }
 
+    @Override
+    public AbstractItem findItem(long uuid) {
+        return dataInMemoryStorage.findItem(uuid);
+    }
+
 }

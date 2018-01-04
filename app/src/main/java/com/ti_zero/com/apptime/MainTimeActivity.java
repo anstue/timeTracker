@@ -1,6 +1,7 @@
 package com.ti_zero.com.apptime;
 
 import android.arch.lifecycle.Lifecycle;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -44,6 +45,11 @@ public class MainTimeActivity extends AppCompatActivity {
         super();
     }
 
+    //TODO solve in another way inject with Application class
+    public static DataAccessFacade getDataAccessFacade() {
+        return dataAccessFacade;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +82,7 @@ public class MainTimeActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(selectedGroupItem.getName());
 
-        adapter = new ItemAdapter(this, selectedGroupItem.getChildren(), dataAccessFacade, itemClickCallback);
+        adapter = new ItemAdapter(this, selectedGroupItem.getChildren(), dataAccessFacade, new ItemClickCallback(this));
         setSupportActionBar(toolbar);
         RecyclerView recyclerViewItems = (RecyclerView) findViewById(R.id.items);
         recyclerViewItems.setAdapter(adapter);
@@ -153,14 +159,21 @@ public class MainTimeActivity extends AppCompatActivity {
         }
     }
 
-    private final ItemCallback itemClickCallback = new ItemCallback() {
+    class ItemClickCallback implements ItemCallback{
+
+        private Context context;
+
+        public ItemClickCallback(Context context) {
+            this.context = context;
+        }
+
         @Override
         public void onClick(AbstractItem item) {
             Logging.logInfo(LogTag.UI, "ItemCallback called");
             if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED) && item.getChildren() != null) {
                 Intent intent = new Intent(getApplicationContext(), MainTimeActivity.class);
                 intent.putExtra(MainTimeActivity.ITEM_UUID, item.getUniqueID());
-                getApplicationContext().startActivity(intent);
+                context.startActivity(intent);
             }
         }
 
@@ -182,6 +195,6 @@ public class MainTimeActivity extends AppCompatActivity {
                 dataAccessFacade.changeItem(item);
             }
         }
-    };
+    }
 
 }
