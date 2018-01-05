@@ -7,9 +7,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/icon_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -26,13 +26,11 @@
             android:name=".ui.CalendarActivity"
             android:label="@string/title_activity_calendar"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.HelperActivity" />
-        <activity android:name=".ui.NotificationHelperActivity" />
 
         <receiver
             android:name=".android.receiver.ToggleItemBroadcastReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true"/>
     </application>
 
 </manifest>
