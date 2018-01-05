@@ -11,5 +11,6 @@
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="counting">Counting</string>
+    <string name="running">running</string>
     <string name="title_activity_calendar">CalendarActivity</string>
 </resources>

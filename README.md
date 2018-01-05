@@ -17,14 +17,12 @@ Android app for time tracking
 
 //TODO dialog before remove
 
-//TODO bug ticklistener makes app to slow
+//TODO bug ticklistener makes app to slow !!!!!!!!!!!!! make it fast again
 
 //TODO unit tests for data objects
 
 //TODO mainview limit considered start dates --> setting with datepicker
 //TODO settingDB
-
-
 
 
 //TODO order after last usage

@@ -44,7 +44,7 @@ public class NotificationHelper {
         PendingIntent pendingIntentToggle = PendingIntent.getBroadcast(context, 0, toggleReceive, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, ITEM_CHANNEL_ID);
-        builder.setSmallIcon(R.drawable.ic_launcher_background);
+        builder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm);
         builder.setVisibility(Notification.VISIBILITY_PUBLIC);
         builder.setPriority(Notification.PRIORITY_MAX);
         builder.setContentTitle("AppTime");
@@ -58,7 +58,9 @@ public class NotificationHelper {
         }
         view.setTextViewText(R.id.txtNotificationName, item.getName());
         view.setOnClickPendingIntent(R.id.btnNotificationToggle, pendingIntentToggle);
-        builder.setContent(view);
+        builder.setCustomBigContentView(view);
+        builder.setCustomContentView(view);
+        builder.setCustomHeadsUpContentView(view);
         Notification notification = builder.build();
         notification.when = when;
         notification.tickerText = tickerText;
@@ -89,39 +91,18 @@ public class NotificationHelper {
 
     public static void createLoadingNotification(Context context) {
         Logging.logDebug(LogTag.UI, "creating notification json ");
-        //TODO only works for older android versions, consider newer ones too, API 26
-//        NotificationCompat.Builder builder =
-//                new NotificationCompat.Builder(context)
-//                        .setSmallIcon(R.drawable.ic_launcher_background)
-//                        .setContentTitle("Creating JSON file");
-//
-//        Intent notificationIntent = new Intent(context, MainTimeActivity.class);
-//        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
-//                PendingIntent.FLAG_UPDATE_CURRENT);
-//        builder.setContentIntent(contentIntent);
-
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, ITEM_CHANNEL_ID);
+        builder.setSmallIcon(android.R.drawable.ic_dialog_info);
+        builder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        builder.setPriority(Notification.PRIORITY_MAX);
+        builder.setContentTitle("AppTime");
+        builder.setContentText("Generating JSON...");
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        // manager.notify(NOTIFICATION_ID_RUNNING_JSON_GENERATION, builder.build());
-
-        String ns = Context.NOTIFICATION_SERVICE;
-        manager = (NotificationManager) context.getSystemService(ns);
-        CharSequence tickerText = "Shortcuts";
         long when = System.currentTimeMillis();
-        Notification.Builder builder = new Notification.Builder(context);
-        Notification notification = builder.getNotification();
+        Notification notification = builder.build();
         notification.when = when;
-        notification.tickerText = tickerText;
-        notification.icon = R.drawable.ic_launcher_background;
-
-        // RemoteViews contentView=new RemoteViews(ctx.getPackageName(), R.layout.notification_layout);
-
-        //set the button listeners
-        //setListeners(contentView);
-
-        //notification.contentView = contentView;
         notification.flags |= Notification.FLAG_ONGOING_EVENT;
-        CharSequence contentTitle = "Loading...";
-        manager.notify(548853, notification);
+        manager.notify(NOTIFICATION_ID_RUNNING_JSON_GENERATION, notification);
     }
 
     public static void removeLoadingNotification(Context context) {
