@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import com.ti_zero.com.apptime.data.objects.AbstractItem;
 import com.ti_zero.com.apptime.data.objects.AccountItem;
 import com.ti_zero.com.apptime.data.objects.GroupItem;
+import com.ti_zero.com.apptime.data.objects.TimeEntry;
 
 import java.io.File;
 
@@ -28,4 +29,8 @@ public interface IDataAccessFacade {
     void loadFromJson(File file);
 
     AbstractItem findItem(long uuid);
+
+    void removeTimeEntry(AccountItem accountItem, TimeEntry timeEntry);
+
+    void addTimeEntry(AccountItem selectedItem, TimeEntry timeEntry);
 }

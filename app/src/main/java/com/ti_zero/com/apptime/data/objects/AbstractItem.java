@@ -2,20 +2,18 @@ package com.ti_zero.com.apptime.data.objects;
 
 import android.databinding.Bindable;
 
-import com.ti_zero.com.apptime.R;
 import com.ti_zero.com.apptime.data.dto.StartItemDTO;
 import com.ti_zero.com.apptime.helper.DurationPrinter;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by uni on 12/22/17.
  */
 
-public abstract class AbstractItem extends ObjWithUUID implements Serializable {
+public abstract class AbstractItem extends ObservableWithUUID implements Serializable, Comparable {
 
     private String name;
     private String description;
@@ -99,6 +97,17 @@ public abstract class AbstractItem extends ObjWithUUID implements Serializable {
         }
     }
 
+    @Override
+    public int compareTo(Object another) {
+        if (((AbstractItem) another).getLastUsage().getTime() > lastUsage.getTime()) {
+            return 1;
+        } else if (((AbstractItem) another).getLastUsage().getTime() == lastUsage.getTime()) {
+            return 0;
+        }
+        return -1;
+
+    }
+
     public abstract long getTotalTime();
 
     @Bindable
@@ -107,7 +116,7 @@ public abstract class AbstractItem extends ObjWithUUID implements Serializable {
     public abstract AccountItem stop();
 
     /**
-     * @return item where timeEntry is added
+     * @return item where time_entry is added
      */
     public abstract StartItemDTO addTimeEntry();
 

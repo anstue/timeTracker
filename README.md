@@ -7,9 +7,8 @@ Android app for time tracking
 //TODO handler for toast or snackbar info(needs access to activity)
 //TODO introduce i18n
 //TODO limit groups in groups to depth=5, activity stack limit!!
-//TODO remove and move timeentries
-//TODO show TimeEntries of AccountItem View(CalendarView) for one accountItem, group and everything
-//TODO set timeEntry manually
+//TODO move timeentries
+//TODO mark item as standard for this group
 
 //TODO edit name in dialog not directly
 
@@ -17,14 +16,16 @@ Android app for time tracking
 
 //TODO dialog before remove
 
-//TODO bug ticklistener makes app to slow !!!!!!!!!!!!! make it fast again
 
 //TODO unit tests for data objects
 
-//TODO mainview limit considered start dates --> setting with datepicker
+//TODO nice chronometer format, without performance issues (customUI element with timertask)
+
+//TODO mainview limit considered start dates --> only show last month
 //TODO settingDB
 
+First Release ------------------------
 
-//TODO order after last usage
+//TODO deutsche übersetzung
 
 

@@ -1,14 +1,8 @@
 package com.ti_zero.com.apptime.data;
 
-import com.ti_zero.com.apptime.data.dao.db.AppDatabase;
 import com.ti_zero.com.apptime.data.objects.AbstractItem;
 import com.ti_zero.com.apptime.data.objects.GroupItem;
-import com.ti_zero.com.apptime.data.objects.ObjWithUUID;
 import com.ti_zero.com.apptime.data.objects.factories.ObjectFactory;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by uni on 12/22/17.

@@ -1,16 +1,20 @@
 package com.ti_zero.com.apptime.data.objects;
 
+import com.ti_zero.com.apptime.helper.DurationPrinter;
+
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * Created by uni on 12/22/17.
  */
 
-public class TimeEntry extends ObjWithUUID implements Serializable {
+public class TimeEntry extends ObservableWithUUID implements Serializable {
 
     private Date start;
     private Date end = null;
+    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("E, yyyy-MM-dd HH:mm");
 
     public TimeEntry(Date start) {
         this.start = start;
@@ -66,5 +70,24 @@ public class TimeEntry extends ObjWithUUID implements Serializable {
         } else {
             return new Date().getTime() - start.getTime();
         }
+    }
+
+    public String getPrettyPrintEnd() {
+        if(end != null) {
+            return simpleDateFormat.format(end);
+        }
+        return "Open";
+    }
+
+    public String getPrettyPrintStart() {
+        return simpleDateFormat.format(start);
+    }
+
+    public String getPrettyPrintDuration() {
+        String duration =  DurationPrinter.printDuration(getDuration());
+        if(end==null) {
+            duration = ">"+duration;
+        }
+        return duration;
     }
 }

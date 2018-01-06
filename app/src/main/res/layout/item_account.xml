@@ -85,8 +85,8 @@
                     android:focusable="false"
                     android:layout_below="@id/labelChronoTimeToday"
                     android:layout_marginEnd="@dimen/fab_margin"
-                    android:format="@{item.todayTimePrettyPrint}"
                     android:textSize="@dimen/text_size" />
+                <!--android:format="@{item.todayTimePrettyPrint}"-->
                 <TextView
                     android:id="@+id/labelChronoTimeTotal"
                     android:layout_width="wrap_content"
@@ -103,8 +103,9 @@
                     android:layout_below="@id/labelChronoTimeTotal"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="5dp"
-                    android:format="@{item.totalTimePrettyPrint}"
+
                     android:textSize="@dimen/text_size" />
+                <!--android:format="@{item.totalTimePrettyPrint}"-->
             </RelativeLayout>
         </LinearLayout>
 

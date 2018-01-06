@@ -56,6 +56,7 @@ public class AccountItem extends AbstractItem {
     public AccountItem stop() {
         if (timeEntries.size() > 0) {
             getLastTimeEntry().stop();
+            setLastUsage(new Date());
             notifyPropertyChanged(BR.btnToggleText);
             notifyPropertyChanged(BR.running);
         }
@@ -67,13 +68,14 @@ public class AccountItem extends AbstractItem {
     }
 
     public StartItemDTO addTimeEntry() {
-        //make sure only one timeEntry is running
+        //make sure only one time_entry is running
         TimeEntry timeEntry = null;
         if (timeEntries.size() > 0 && !getLastTimeEntry().isStopped()) {
             timeEntry = getLastTimeEntry();
             getLastTimeEntry().stop();
         }
         timeEntries.add(new TimeEntry(new Date()));
+        setLastUsage(new Date());
         notifyPropertyChanged(BR.btnToggleText);
         notifyPropertyChanged(BR.running);
         return new StartItemDTO(this, false, timeEntry);
@@ -112,5 +114,11 @@ public class AccountItem extends AbstractItem {
             sum += t.getDuration();
         }
         return sum;
+    }
+
+    public void removeTimeEntry(TimeEntry timeEntry) {
+        timeEntries.remove(timeEntry);
+        this.notifyPropertyChanged(BR.todayTimePrettyPrint);
+        this.notifyPropertyChanged(BR.totalTimePrettyPrint);
     }
 }

@@ -30,7 +30,20 @@
         <receiver
             android:name=".android.receiver.ToggleItemBroadcastReceiver"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainTimeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ti_zero.com.apptime.MainTimeActivity" />
+        </activity>
+        <activity
+            android:name=".ui.TimeEntryActivity"
+            android:label="@string/title_activity_time_entry"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

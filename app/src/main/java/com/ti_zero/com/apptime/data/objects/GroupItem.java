@@ -95,6 +95,7 @@ public class GroupItem extends AbstractItem {
         for (AbstractItem i : items) {
             if (i.isRunning()) {
                 AccountItem retValue = i.stop();
+                setLastUsage(new Date());
                 notifyPropertyChanged(BR.btnToggleText);
                 notifyPropertyChanged(BR.running);
                 return retValue;
@@ -106,6 +107,7 @@ public class GroupItem extends AbstractItem {
     @Override
     public StartItemDTO addTimeEntry() {
         boolean newItem=false;
+        setLastUsage(new Date());
         if (getStandardAccountItem() == null) {
             //TODO show toast or snackbar, that accountitem got created
             addItem(new ObjectFactory().getNewAccountItem());

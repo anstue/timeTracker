@@ -1,4 +1,4 @@
-package com.ti_zero.com.apptime.ui;
+package com.ti_zero.com.apptime.ui.adapters;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
@@ -6,13 +6,9 @@ import android.databinding.Observable;
 import android.os.SystemClock;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
-import android.widget.PopupMenu;
 
 import com.ti_zero.com.apptime.BR;
 import com.ti_zero.com.apptime.R;
@@ -22,7 +18,6 @@ import com.ti_zero.com.apptime.databinding.ItemAccountBinding;
 import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
 import com.ti_zero.com.apptime.ui.callbacks.ItemCallback;
-import com.ti_zero.com.apptime.ui.dto.ItemRowPair;
 import com.ti_zero.com.apptime.ui.helper.NotificationHelper;
 
 import java.util.List;
@@ -109,15 +104,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
             chronoTimeToday.stop();
         }
         //use only one tickListener per cardview
-        chronoTimeTotal.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener(){
-            @Override
-            public void onChronometerTick(Chronometer cArg) {
-                if(item.isRunning()) {
-                    item.notifyPropertyChanged(BR.totalTimePrettyPrint);
-                    item.notifyPropertyChanged(BR.todayTimePrettyPrint);
-                }
-            }
-        });
+//        chronoTimeTotal.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener(){
+//            @Override
+//            public void onChronometerTick(Chronometer cArg) {
+//                if(item.isRunning()) {
+//                    item.notifyPropertyChanged(BR.totalTimePrettyPrint);
+//                    item.notifyPropertyChanged(BR.todayTimePrettyPrint);
+//                }
+//            }
+//        });
         item.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable observable, int i) {

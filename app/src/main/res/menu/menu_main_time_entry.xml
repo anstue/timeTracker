@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.ti_zero.com.apptime.ui.TimeEntryActivity">
+    <item
+        android:id="@+id/action_new_time_entry"
+        android:title="@string/new_entry"
+        app:showAsAction="ifRoom" />
+
+</menu>

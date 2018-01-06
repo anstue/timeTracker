@@ -22,7 +22,7 @@ public interface AccountEntityDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addAccountEntity(AccountEntity accountEntity);
 
-    @Query("select * from accountentity")
+    @Query("select * from accountentity order by lastUsage desc")
     List<AccountEntity> getAllAccountEntities();
 
     @Query("select * from accountentity where accountEntityId = :accountEntityId")
@@ -34,6 +34,6 @@ public interface AccountEntityDao {
     @Query("delete from accountentity where accountEntityId=:accountEntityId")
     void deleteAccountEntity(long accountEntityId);
 
-    @Query("select * from accountentity where groupEntityId = :groupEntityId")
+    @Query("select * from accountentity where groupEntityId = :groupEntityId order by lastUsage desc")
     List<AccountEntity> getAccountEntities(long groupEntityId);
 }

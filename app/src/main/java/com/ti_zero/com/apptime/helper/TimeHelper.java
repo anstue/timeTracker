@@ -40,14 +40,14 @@ public class TimeHelper {
         long relativeEnd = endDate.getTime() - end;
         long sum = relativeStart + relativeEnd;
         if (relativeStart > 0 && relativeEnd < 0) {
-            //timeEntry completely within day
+            //time_entry completely within day
             return timeEntry.getDuration();
         } else if (relativeStart < 0 && relativeEnd < 0 && endDate.getTime() > start) {
-            //timeEntry started before today and ends today
+            //time_entry started before today and ends today
             long totalTime = timeEntry.getDuration();
             return totalTime + relativeStart;
         } else if (relativeStart > 0 && relativeEnd > 0 && timeEntry.getStart().getTime() < end) {
-            //timeEntry started within today and ends on another day
+            //time_entry started within today and ends on another day
             long totalTime = timeEntry.getDuration();
             return totalTime - relativeEnd;
         } else if (relativeStart < 0 && relativeEnd > 0) {

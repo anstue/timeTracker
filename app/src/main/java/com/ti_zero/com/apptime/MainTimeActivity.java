@@ -8,15 +8,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.ContextMenu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
 
 import com.ti_zero.com.apptime.data.DataAccessFacade;
 import com.ti_zero.com.apptime.data.objects.AbstractItem;
@@ -24,12 +20,14 @@ import com.ti_zero.com.apptime.data.objects.GroupItem;
 import com.ti_zero.com.apptime.data.objects.factories.ObjectFactory;
 import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
-import com.ti_zero.com.apptime.ui.ItemAdapter;
+import com.ti_zero.com.apptime.ui.adapters.ItemAdapter;
+import com.ti_zero.com.apptime.ui.TimeEntryActivity;
 import com.ti_zero.com.apptime.ui.callbacks.ItemCallback;
 import com.ti_zero.com.apptime.ui.helper.PermissionHelper;
 
-import java.io.File;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 public class MainTimeActivity extends AppCompatActivity {
 
@@ -81,8 +79,9 @@ public class MainTimeActivity extends AppCompatActivity {
         }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(selectedGroupItem.getName());
-
-        adapter = new ItemAdapter(this, selectedGroupItem.getChildren(), dataAccessFacade, new ItemClickCallback(this));
+        List<AbstractItem> children = selectedGroupItem.getChildren();
+        Collections.sort(children);
+        adapter = new ItemAdapter(this, children, dataAccessFacade, new ItemClickCallback(this));
         setSupportActionBar(toolbar);
         RecyclerView recyclerViewItems = (RecyclerView) findViewById(R.id.items);
         recyclerViewItems.setAdapter(adapter);
@@ -109,6 +108,8 @@ public class MainTimeActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            getApplicationContext().startActivity(intent);
             return true;
         } else if (id == R.id.btnMenuMainNewGroup) {
             dataAccessFacade.createNewItem(selectedGroupItem, objectFactory.getNewGroupItem());
@@ -159,7 +160,7 @@ public class MainTimeActivity extends AppCompatActivity {
         }
     }
 
-    class ItemClickCallback implements ItemCallback{
+    class ItemClickCallback implements ItemCallback {
 
         private Context context;
 
@@ -170,10 +171,16 @@ public class MainTimeActivity extends AppCompatActivity {
         @Override
         public void onClick(AbstractItem item) {
             Logging.logInfo(LogTag.UI, "ItemCallback called");
-            if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED) && item.getChildren() != null) {
-                Intent intent = new Intent(getApplicationContext(), MainTimeActivity.class);
-                intent.putExtra(MainTimeActivity.ITEM_UUID, item.getUniqueID());
-                context.startActivity(intent);
+            if(getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+                if (item.getChildren() != null) {
+                    Intent intent = new Intent(getApplicationContext(), MainTimeActivity.class);
+                    intent.putExtra(MainTimeActivity.ITEM_UUID, item.getUniqueID());
+                    context.startActivity(intent);
+                } else { //AccountItem
+                    Intent intent = new Intent(getApplicationContext(), TimeEntryActivity.class);
+                    intent.putExtra(MainTimeActivity.ITEM_UUID, item.getUniqueID());
+                    context.startActivity(intent);
+                }
             }
         }
 

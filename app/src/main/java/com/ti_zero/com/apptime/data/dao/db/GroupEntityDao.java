@@ -22,7 +22,7 @@ public interface GroupEntityDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addGroupEntity(GroupEntity groupEntity);
 
-    @Query("select * from groupentity")
+    @Query("select * from groupentity order by lastUsage desc")
     List<GroupEntity> getAllGroupEntities();
 
     @Query("select * from groupentity where groupEntityId = :groupEntityId")
@@ -37,6 +37,6 @@ public interface GroupEntityDao {
     @Query("delete from groupentity")
     void removeAll();
 
-    @Query("select * from groupentity where parentGroupEntityId = :groupEntityId")
+    @Query("select * from groupentity where parentGroupEntityId = :groupEntityId  order by lastUsage desc")
     List<GroupEntity> getGroupEntities(long groupEntityId);
 }

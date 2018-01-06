@@ -1,7 +1,5 @@
 package com.ti_zero.com.apptime.data.dao.db.worker;
 
-import android.support.annotation.NonNull;
-
 import com.ti_zero.com.apptime.data.DataInMemoryStorage;
 import com.ti_zero.com.apptime.data.dao.db.AppDatabase;
 import com.ti_zero.com.apptime.data.dao.db.entities.AccountEntity;
@@ -9,13 +7,12 @@ import com.ti_zero.com.apptime.data.dao.db.entities.GroupEntity;
 import com.ti_zero.com.apptime.data.dao.db.entities.TimeEntity;
 import com.ti_zero.com.apptime.data.objects.AccountItem;
 import com.ti_zero.com.apptime.data.objects.GroupItem;
-import com.ti_zero.com.apptime.data.objects.ObjWithUUID;
+import com.ti_zero.com.apptime.data.objects.ObservableWithUUID;
 import com.ti_zero.com.apptime.data.objects.TimeEntry;
 import com.ti_zero.com.apptime.data.objects.factories.ObjectFactory;
 import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -35,9 +32,9 @@ public class InitializeMemoryDbWorker extends GenericWorkerThread {
 
     @Override
     public void run() {
-        //appDatabase.groupEntityDao().deleteGroupEntity(ObjWithUUID.ROOT_UUID);
+        //appDatabase.groupEntityDao().deleteGroupEntity(ObservableWithUUID.ROOT_UUID);
 
-        List<GroupEntity> groupEntities = appDatabase.groupEntityDao().getGroupEntity(ObjWithUUID.ROOT_UUID);
+        List<GroupEntity> groupEntities = appDatabase.groupEntityDao().getGroupEntity(ObservableWithUUID.ROOT_UUID);
         if (groupEntities.size() == 0) {
             //create root item
             GroupEntity groupEntity = convertGroupItemToGroupEntity(null, new ObjectFactory().getRootItem());
