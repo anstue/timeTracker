@@ -13,15 +13,23 @@ import java.util.Date;
 
 public class ObjectFactory {
 
-    public AbstractItem getNewAccountItem() {
+    public AccountItem getNewAccountItem() {
         return new AccountItem("New", "", new Date(), false);
     }
 
-    public AbstractItem getNewGroupItem() {
+    public AccountItem getNewAccountItem(String name, long uuid) {
+        return new AccountItem(name, "", new Date(), false, uuid);
+    }
+
+    public GroupItem getNewGroupItem() {
         return new GroupItem("New Group", "", new Date(), false);
     }
 
-    public AbstractItem getRootItem() {
+    public GroupItem getNewGroupItem(String name, long uuid) {
+        return new GroupItem(name,"", new Date(), false, uuid);
+    }
+
+    public GroupItem getRootItem() {
         return new GroupItem("Root", "", new Date(), false, ObservableWithUUID.ROOT_UUID);
     }
 }

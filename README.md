@@ -16,16 +16,17 @@ Android app for time tracking
 
 //TODO dialog before remove
 
-
-//TODO unit tests for data objects
-
 //TODO nice chronometer format, without performance issues (customUI element with timertask)
 
 //TODO mainview limit considered start dates --> only show last month
 //TODO settingDB
 
-First Release ------------------------
+First Release 1.0------------------------
 
 //TODO deutsche übersetzung
 
+//TODO bug notification button not working 
+        after longer time
+        when app is explicitly closed
 
+//TODO unit tests for data objects
