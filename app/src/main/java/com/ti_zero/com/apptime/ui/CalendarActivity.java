@@ -9,6 +9,9 @@ import android.view.View;
 
 import com.ti_zero.com.apptime.R;
 
+/**
+ * DRAFT not used at the moment
+ */
 public class CalendarActivity extends AppCompatActivity {
 
     @Override
