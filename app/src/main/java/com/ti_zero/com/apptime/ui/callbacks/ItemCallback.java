@@ -22,7 +22,7 @@ public interface ItemCallback {
 
     void onClick(AbstractItem item);
     void onBtnClick(AbstractItem item);
-    void onTextChanged(AbstractItem item);
+    void openChangeNameDialog(AbstractItem item);
 
     default void stopItem(AbstractItem item, Context context, DataAccessFacade dataAccessFacade) {
         if (item.isRunning()) {

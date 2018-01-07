@@ -1,5 +1,7 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="txt_margin_top">14dp</dimen>
+    <dimen name="txt_margin_start">16dp</dimen>
     <dimen name="chrono_margin">2dp</dimen>
     <dimen name="notification_margin">3dp</dimen>
     <dimen name="text_size">16sp</dimen>

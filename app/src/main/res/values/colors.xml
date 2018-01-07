@@ -7,4 +7,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorCardViewGroup">#dbdbdc</color>
     <color name="colorCardViewWhite">#ffffff</color>
+    <color name="black">#000000</color>
 </resources>

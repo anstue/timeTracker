@@ -1,5 +1,6 @@
 package com.ti_zero.com.apptime;
 
+import android.app.Dialog;
 import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.ti_zero.com.apptime.data.DataAccessFacade;
 import com.ti_zero.com.apptime.data.objects.AbstractItem;
@@ -33,10 +35,11 @@ public class MainTimeActivity extends AppCompatActivity {
 
     public static final String ITEM_UUID = "GroupItemUUID";
     private static final int FILE_OPEN_CODE = 1;
-    private static DataAccessFacade dataAccessFacade;
+    private static DataAccessFacade dataAccessFacade; //TODO make not static here use android Application class
     private ObjectFactory objectFactory = new ObjectFactory();
     private ItemAdapter adapter;
     private GroupItem selectedGroupItem;
+    private Dialog changeNameDialog;
 
 
     public MainTimeActivity() {
@@ -160,6 +163,17 @@ public class MainTimeActivity extends AppCompatActivity {
         }
     }
 
+    public void onChangeName(View view) {
+        TextView txtName = ((View) view.getParent()).findViewById(R.id.txtChangedName);
+        long uuid = (long) txtName.getTag();
+        if (!txtName.getText().toString().equals("")) {
+            AbstractItem item = dataAccessFacade.findItem(uuid);
+            item.setName(txtName.getText().toString());
+            dataAccessFacade.changeItem(item);
+            changeNameDialog.dismiss();
+        }
+    }
+
     class ItemClickCallback implements ItemCallback {
 
         private Context context;
@@ -171,7 +185,7 @@ public class MainTimeActivity extends AppCompatActivity {
         @Override
         public void onClick(AbstractItem item) {
             Logging.logInfo(LogTag.UI, "ItemCallback called");
-            if(getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+            if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
                 if (item.getChildren() != null) {
                     Intent intent = new Intent(getApplicationContext(), MainTimeActivity.class);
                     intent.putExtra(MainTimeActivity.ITEM_UUID, item.getUniqueID());
@@ -197,10 +211,13 @@ public class MainTimeActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onTextChanged(AbstractItem item) {
-            if (!item.getName().equals("")) {
-                dataAccessFacade.changeItem(item);
-            }
+        public void openChangeNameDialog(AbstractItem item) {
+            changeNameDialog = new Dialog(context);
+            changeNameDialog.setCancelable(true);
+            changeNameDialog.setContentView(R.layout.change_name_dialog);
+            ((TextView) changeNameDialog.findViewById(R.id.txtChangedName)).setText(item.getName());
+            ((TextView) changeNameDialog.findViewById(R.id.txtChangedName)).setTag(item.getUniqueID());
+            changeNameDialog.show();
         }
     }
 

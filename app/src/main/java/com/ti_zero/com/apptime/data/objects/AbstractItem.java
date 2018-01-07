@@ -2,6 +2,7 @@ package com.ti_zero.com.apptime.data.objects;
 
 import android.databinding.Bindable;
 
+import com.ti_zero.com.apptime.BR;
 import com.ti_zero.com.apptime.data.dto.StartItemDTO;
 import com.ti_zero.com.apptime.helper.DurationPrinter;
 
@@ -47,6 +48,7 @@ public abstract class AbstractItem extends ObservableWithUUID implements Seriali
 
     public void setName(String name) {
         this.name = name;
+        this.notifyPropertyChanged(BR.name);
     }
 
     public String getDescription() {

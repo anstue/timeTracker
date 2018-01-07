@@ -12,6 +12,7 @@
     <string name="stop">Stop</string>
     <string name="end">End</string>
     <string name="create">Create</string>
+    <string name="ok">OK</string>
     <string name="counting">Counting</string>
     <string name="running">running</string>
     <string name="duration">Duration</string>
