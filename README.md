@@ -27,12 +27,10 @@ First Release 1.1------------------------
 
 //TODO deutsche übersetzung
 
-//TODO rename in dialog
-
 //TODO bug: notification button not working 
         after longer time
         when app is explicitly closed
 
 //TODO notification prettifying
 
-
+//faster start stop
