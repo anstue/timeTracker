@@ -41,7 +41,8 @@ public class NotificationHelper {
 
         Intent toggleReceive = new Intent(context, ToggleItemBroadcastReceiver.class);
         toggleReceive.putExtra(NOTIFICATION_ACTION_BTN_TOGGLE, item.getUniqueID());
-        PendingIntent pendingIntentToggle = PendingIntent.getBroadcast(context, 0, toggleReceive, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntentToggle = PendingIntent.getBroadcast(context, 0, toggleReceive,
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_CANCEL_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, ITEM_CHANNEL_ID);
         builder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm);
@@ -57,6 +58,7 @@ public class NotificationHelper {
             view.setViewVisibility(R.id.txtCounting, 8);
         }
         view.setTextViewText(R.id.txtNotificationName, item.getName());
+        view.setTextViewText(R.id.txtSince, item.getShortStartTime());
         view.setOnClickPendingIntent(R.id.btnNotificationToggle, pendingIntentToggle);
         builder.setCustomBigContentView(view);
         builder.setCustomContentView(view);

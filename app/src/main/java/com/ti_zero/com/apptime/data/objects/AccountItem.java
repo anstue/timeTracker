@@ -108,6 +108,11 @@ public class AccountItem extends AbstractItem {
     }
 
     @Override
+    public String getShortStartTime() {
+        return getLastTimeEntry().getPrettyPrintShortStart();
+    }
+
+    @Override
     public long getTotalTime() {
         long sum = 0;
         for (TimeEntry t : timeEntries) {

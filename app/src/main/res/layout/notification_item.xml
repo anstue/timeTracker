@@ -4,31 +4,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent">-->
-    <!--<TextView-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginStart="@dimen/notification_margin"-->
-    <!--android:layout_marginTop="@dimen/notification_margin"-->
-    <!--android:text="@string/app_name"-->
-    <!--style="@style/NotificationText"-->
-    <!--android:textStyle="bold"/>-->
-    <!--</LinearLayout>-->
-
-    <RelativeLayout
-        android:id="@+id/notification_item"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <ImageView
+            style="@style/NotificationIcon"
             android:id="@+id/imgIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/notification_icon_margin_start"
             android:layout_marginTop="@dimen/notification_icon_margin"
             android:src="@android:drawable/ic_lock_idle_alarm" />
+        <TextView
+            style="@style/NotificationTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/notification_margin"
+            android:layout_marginTop="@dimen/notification_margin"
+            android:text="@string/app_name" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/notification_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/txtNotificationName"
@@ -38,10 +37,8 @@
             android:layout_marginEnd="@dimen/item_horizontal_margin"
             android:layout_marginStart="@dimen/item_horizontal_margin"
             android:layout_marginTop="@dimen/notification_horizontal_margin"
-            android:layout_toEndOf="@+id/imgIcon"
             android:text="@string/app_name"
-            android:textSize="@dimen/text_size"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_size"/>
 
         <TextView
             android:id="@+id/txtCounting"
@@ -50,7 +47,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/notification_horizontal_margin"
             android:layout_toEndOf="@+id/txtNotificationName"
-            android:text="@string/running"
+            android:text="@string/started_at"
+            android:textSize="@dimen/text_size" />
+
+        <TextView
+            android:id="@+id/txtSince"
+            style="@style/NotificationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/item_horizontal_margin"
+            android:layout_marginTop="@dimen/notification_horizontal_margin"
+            android:layout_toEndOf="@+id/txtCounting"
+            android:text=""
             android:textSize="@dimen/text_size" />
 
         <Button

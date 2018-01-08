@@ -164,6 +164,15 @@ public class GroupItem extends AbstractItem {
         return sum;
     }
 
+    @Override
+    public String getShortStartTime() {
+        if(getStandardAccountItem()!=null) {
+            return getStandardAccountItem().getShortStartTime();
+        } else {
+            return "";
+        }
+    }
+
     public void findAndRemoveItem(long itemUUID) {
         for(AbstractItem item : items) {
             if(item.getUniqueID()==itemUUID) {

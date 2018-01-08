@@ -8,3 +8,5 @@
 /captures
 .externalNativeBuild
 *.kate-swp
+app/release/**
+app/debug/**

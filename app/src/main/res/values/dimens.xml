@@ -7,7 +7,7 @@
     <dimen name="text_size">16sp</dimen>
     <dimen name="item_horizontal_margin">8dp</dimen>
     <dimen name="notification_horizontal_margin">11dp</dimen>
-    <dimen name="notification_icon_margin">15dp</dimen>
+    <dimen name="notification_icon_margin">6dp</dimen>
     <dimen name="notification_icon_margin_start">4dp</dimen>
     <dimen name="product_item_min_height">100dp</dimen>
 </resources>

@@ -23,14 +23,11 @@ Android app for time tracking
 //TODO mainview limit considered start dates --> only show last month
 //TODO settingDB
 
-First Release 1.1------------------------
+First Release 1.2------------------------
 
 //TODO deutsche übersetzung
 
-//TODO bug: notification button not working 
-        after longer time
-        when app is explicitly closed
-
-//TODO notification prettifying
+//TODO notification prettifying bei langen namen
 
 //faster start stop
+

@@ -135,4 +135,6 @@ public abstract class AbstractItem extends ObservableWithUUID implements Seriali
     }
 
     public abstract long getTodayTime();
+
+    public abstract String getShortStartTime();
 }
