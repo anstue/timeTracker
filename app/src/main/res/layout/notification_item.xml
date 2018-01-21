@@ -1,74 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ImageView
-            style="@style/NotificationIcon"
-            android:id="@+id/imgIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/notification_icon_margin_start"
-            android:layout_marginTop="@dimen/notification_icon_margin"
-            android:src="@android:drawable/ic_lock_idle_alarm" />
-        <TextView
-            style="@style/NotificationTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/notification_margin"
-            android:layout_marginTop="@dimen/notification_margin"
-            android:text="@string/app_name" />
-    </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/notification_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/title"
+                style="@android:style/TextAppearance.Material.Notification.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@android:drawable/ic_lock_idle_alarm"
+                android:drawablePadding="@dimen/notification_icon_margin"
+                android:layout_marginStart="@dimen/notification_margin"
+                android:layout_marginTop="@dimen/notification_margin"
+                android:text="@string/app_name" />
+            <TextView
+                android:id="@+id/txtNotificationName"
+                style="@android:style/TextAppearance.Material.Notification.Line2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/item_horizontal_margin"
+                android:layout_marginStart="@dimen/item_horizontal_margin"
+                android:layout_marginTop="@dimen/notification_horizontal_margin"
+                android:layout_below="@id/title"
+                android:text="@string/app_name"
+                android:textSize="@dimen/text_size" />
 
-    <RelativeLayout
-        android:id="@+id/notification_item"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/txtCounting"
+                style="@android:style/TextAppearance.Material.Notification.Line2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/notification_horizontal_margin"
+                android:layout_toEndOf="@+id/txtNotificationName"
+                android:layout_below="@id/title"
+                android:text="@string/started_at"
+                android:textSize="@dimen/text_size" />
 
-        <TextView
-            android:id="@+id/txtNotificationName"
-            style="@style/NotificationText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/item_horizontal_margin"
-            android:layout_marginStart="@dimen/item_horizontal_margin"
-            android:layout_marginTop="@dimen/notification_horizontal_margin"
-            android:text="@string/app_name"
-            android:textSize="@dimen/text_size"/>
+            <TextView
+                android:id="@+id/txtSince"
+                style="@android:style/TextAppearance.Material.Notification.Line2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/item_horizontal_margin"
+                android:layout_marginTop="@dimen/notification_horizontal_margin"
+                android:layout_below="@id/title"
+                android:layout_toEndOf="@+id/txtCounting"
+                android:text=""
+                android:textSize="@dimen/text_size" />
 
-        <TextView
-            android:id="@+id/txtCounting"
-            style="@style/NotificationText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/notification_horizontal_margin"
-            android:layout_toEndOf="@+id/txtNotificationName"
-            android:text="@string/started_at"
-            android:textSize="@dimen/text_size" />
+        </RelativeLayout>
 
-        <TextView
-            android:id="@+id/txtSince"
-            style="@style/NotificationText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/item_horizontal_margin"
-            android:layout_marginTop="@dimen/notification_horizontal_margin"
-            android:layout_toEndOf="@+id/txtCounting"
-            android:text=""
-            android:textSize="@dimen/text_size" />
-
-        <Button
-            android:id="@+id/btnNotificationToggle"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/item_horizontal_margin"
-            android:text="@string/stop" />
-
-    </RelativeLayout>
-</LinearLayout>
+    <Button
+        android:id="@+id/btnNotificationToggle"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/item_horizontal_margin"
+        android:text="@string/stop" />
+</RelativeLayout>

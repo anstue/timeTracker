@@ -23,11 +23,18 @@ Android app for time tracking
 //TODO mainview limit considered start dates --> only show last month
 //TODO settingDB
 
+//reminder, if an hour running, auto stop?
+
 First Release 1.2------------------------
 
 //TODO deutsche übersetzung
 
 //TODO notification prettifying bei langen namen
 
-//faster start stop
+//faster start stop (dbworker get called too often)
+
+//start btn 10 minutes ago
+//auswertung von zeitraum
+
+
 

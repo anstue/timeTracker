@@ -72,6 +72,12 @@ public class TimeEntryActivity extends AppCompatActivity {
             timeEntryDialog = new Dialog(this);
             timeEntryDialog.setCancelable(true);
             timeEntryDialog.setContentView(R.layout.create_time_entry);
+            ((TextView)timeEntryDialog.findViewById(R.id.txtStartDate)).setText(DateHelper.getStringFromDate(new Date()));
+            ((TextView)timeEntryDialog.findViewById(R.id.txtEndDate)).setText(DateHelper.getStringFromDate(new Date()));
+            Calendar calendarStartTime = Calendar.getInstance();
+            calendarStartTime.add(Calendar.HOUR,-1);
+            ((TextView)timeEntryDialog.findViewById(R.id.txtStartTime)).setText(DateHelper.getStringFromTime(calendarStartTime.getTime()));
+            ((TextView)timeEntryDialog.findViewById(R.id.txtEndTime)).setText(DateHelper.getStringFromTime(new Date()));
             timeEntryDialog.show();
         }
         return true;

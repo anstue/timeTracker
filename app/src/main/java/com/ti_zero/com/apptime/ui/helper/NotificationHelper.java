@@ -53,9 +53,11 @@ public class NotificationHelper {
         if (item.isRunning()) {
             view.setTextViewText(R.id.btnNotificationToggle, "Stop");
             view.setViewVisibility(R.id.txtCounting, 0);
+            view.setViewVisibility(R.id.txtSince, 0);
         } else {
             view.setTextViewText(R.id.btnNotificationToggle, "Start");
             view.setViewVisibility(R.id.txtCounting, 8);
+            view.setViewVisibility(R.id.txtSince, 8);
         }
         view.setTextViewText(R.id.txtNotificationName, item.getName());
         view.setTextViewText(R.id.txtSince, item.getShortStartTime());

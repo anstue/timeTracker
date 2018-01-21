@@ -11,10 +11,22 @@ import java.util.Locale;
 
 public class DateHelper {
 
-    private static String dateFormat="yyyy-MM-dd HH:mm";
+    private static String dateTimeFormat ="yyyy-MM-dd HH:mm";
+    private static String dateFormat ="yyyy-MM-dd";
+    private static String timeFormat ="HH:mm";
+    private static SimpleDateFormat simpleDateTimeFormat = new SimpleDateFormat(dateTimeFormat, Locale.US);
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
+    private static SimpleDateFormat simpleTimeFormat = new SimpleDateFormat(timeFormat, Locale.US);
 
     public static Date getDateFromString(String date) throws ParseException {
-        return simpleDateFormat.parse(date);
+        return simpleDateTimeFormat.parse(date);
+    }
+
+    public static String getStringFromDate(Date date) {
+        return simpleDateFormat.format(date);
+    }
+
+    public static String getStringFromTime(Date date) {
+        return simpleTimeFormat.format(date);
     }
 }
