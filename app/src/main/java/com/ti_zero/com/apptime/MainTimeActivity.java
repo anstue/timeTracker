@@ -1,10 +1,13 @@
 package com.ti_zero.com.apptime;
 
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -36,6 +39,9 @@ public class MainTimeActivity extends AppCompatActivity {
     public static final String ITEM_UUID = "GroupItemUUID";
     private static final int FILE_OPEN_CODE = 1;
     private static DataAccessFacade dataAccessFacade; //TODO make not static here use android Application class
+    public static final String NOTIFICATION_CHANNEL_ITEM_ID_INFO = "ITEM_CHANNEL";
+    public static final String NOTIFICATION_CHANNEL_PROCESSING_ID_INFO = "PROCESSING_CHANNEL";
+
     private ObjectFactory objectFactory = new ObjectFactory();
     private ItemAdapter adapter;
     private GroupItem selectedGroupItem;
@@ -63,7 +69,24 @@ public class MainTimeActivity extends AppCompatActivity {
                     initializeView();
                 }
             });
+// Register NotificationChannels needed for API 26+ to display notification messages
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationManager mNotificationManager = (NotificationManager)getSystemService(
+                        Context.NOTIFICATION_SERVICE);
+                NotificationChannel infoChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ITEM_ID_INFO,
+                        getString(R.string.notification_channel_item_name_info), NotificationManager.IMPORTANCE_DEFAULT);
+                infoChannel.setDescription(getString(R.string.notification_channel_item_description_info));
+                infoChannel.enableLights(false);
+                infoChannel.enableVibration(false);
+                mNotificationManager.createNotificationChannel(infoChannel);
 
+                NotificationChannel infoChannel_Processing = new NotificationChannel(NOTIFICATION_CHANNEL_PROCESSING_ID_INFO,
+                        getString(R.string.notification_channel_processing_name_info), NotificationManager.IMPORTANCE_DEFAULT);
+                infoChannel_Processing.setDescription(getString(R.string.notification_channel_processing_description_info));
+                infoChannel_Processing.enableLights(false);
+                infoChannel_Processing.enableVibration(false);
+                mNotificationManager.createNotificationChannel(infoChannel_Processing);
+            }
         } else {
             initializeView();
         }

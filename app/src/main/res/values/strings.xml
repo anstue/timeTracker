@@ -93,4 +93,8 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_time_entry">TimeEntryActivity</string>
+    <string name="notification_channel_item_name_info">Running item</string>
+    <string name="notification_channel_item_description_info">Shows the running item</string>
+    <string name="notification_channel_processing_name_info">Processing tasks</string>
+    <string name="notification_channel_processing_description_info">Shows background processing tasks</string>
 </resources>

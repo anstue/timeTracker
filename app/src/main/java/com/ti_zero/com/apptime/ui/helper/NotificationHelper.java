@@ -23,7 +23,6 @@ import com.ti_zero.com.apptime.helper.Logging;
 public class NotificationHelper {
 
     public static final String NOTIFICATION_ACTION_BTN_TOGGLE = "actionBtnToggle";
-    private static final String ITEM_CHANNEL_ID = "ITEM_CHANNEL";
     private static int NOTIFICATION_ID_RUNNING_ITEM = 10001;
     public static int NOTIFICATION_ID_RUNNING_JSON_GENERATION = 10002;
 
@@ -44,7 +43,7 @@ public class NotificationHelper {
         PendingIntent pendingIntentToggle = PendingIntent.getBroadcast(context, 0, toggleReceive,
                 PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_CANCEL_CURRENT);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, ITEM_CHANNEL_ID);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainTimeActivity.NOTIFICATION_CHANNEL_ITEM_ID_INFO);
         builder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm);
         builder.setVisibility(Notification.VISIBILITY_PUBLIC);
         builder.setPriority(Notification.PRIORITY_MAX);
@@ -95,7 +94,7 @@ public class NotificationHelper {
 
     public static void createLoadingNotification(Context context) {
         Logging.logDebug(LogTag.UI, "creating notification json ");
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, ITEM_CHANNEL_ID);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainTimeActivity.NOTIFICATION_CHANNEL_PROCESSING_ID_INFO);
         builder.setSmallIcon(android.R.drawable.ic_dialog_info);
         builder.setVisibility(Notification.VISIBILITY_PUBLIC);
         builder.setPriority(Notification.PRIORITY_MAX);
