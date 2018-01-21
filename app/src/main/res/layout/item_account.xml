@@ -52,18 +52,38 @@
                     android:onClick="@{() ->callback.openChangeNameDialog(item) }"
                     android:text="@={item.name}"/>
 
+
+                <Button
+                    android:id="@+id/btnMinus10"
+                    android:layout_width="@dimen/btnSmall"
+                    android:layout_height="wrap_content"
+                    android:layout_toStartOf="@id/btnToggle"
+                    android:background="@{item.running ? @color/colorBtnRunning: @color/colorBtnStopped }"
+                    android:layout_marginEnd="5dp"
+                    android:onClick="@{() -> callback.onBtnMinus10Click(item)}"
+                    android:text="@string/minus10" />
+
                 <Button
                     android:id="@+id/btnToggle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    android:layout_toStartOf="@id/btnPlus10"
                     android:background="@{item.running ? @color/colorBtnRunning: @color/colorBtnStopped }"
                     android:layout_marginEnd="5dp"
                     android:onClick="@{() -> callback.onBtnClick(item)}"
                     android:text="@{item.btnToggleText}" />
 
+                <Button
+                    android:id="@+id/btnPlus10"
+                    android:layout_width="@dimen/btnSmall"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:background="@{item.running ? @color/colorBtnRunning: @color/colorBtnStopped }"
+                    android:layout_marginEnd="5dp"
+                    android:onClick="@{() -> callback.onBtnPlus10Click(item)}"
+                    android:text="@string/plus10" />
 
-            </RelativeLayout>
+                </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"

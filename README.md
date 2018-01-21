@@ -25,7 +25,7 @@ Android app for time tracking
 
 //reminder, if an hour running, auto stop?
 
-First Release 1.2------------------------
+Release 1.2------------------------
 
 //TODO deutsche übersetzung
 
@@ -33,8 +33,8 @@ First Release 1.2------------------------
 
 //faster start stop (dbworker get called too often)
 
-//start btn 10 minutes ago
 //auswertung von zeitraum
 
 
-
+//Fehler bei start btn 10min früher reihenfolge von timeentries nicht mehr gewährleistet
+//check das dass nicht passieren kann

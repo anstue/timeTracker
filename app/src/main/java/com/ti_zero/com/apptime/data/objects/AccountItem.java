@@ -3,6 +3,7 @@ package com.ti_zero.com.apptime.data.objects;
 import com.ti_zero.com.apptime.BR;
 import com.ti_zero.com.apptime.R;
 import com.ti_zero.com.apptime.data.dto.StartItemDTO;
+import com.ti_zero.com.apptime.data.dto.TimeEntryDTO;
 import com.ti_zero.com.apptime.helper.DurationPrinter;
 import com.ti_zero.com.apptime.helper.TimeHelper;
 
@@ -110,6 +111,15 @@ public class AccountItem extends AbstractItem {
     @Override
     public String getShortStartTime() {
         return getLastTimeEntry().getPrettyPrintShortStart();
+    }
+
+    @Override
+    public TimeEntryDTO findCurrentTimeEntry() {
+        TimeEntry timeEntry = getLastTimeEntry();
+        if (timeEntry.getEnd() == null) {
+            return new TimeEntryDTO(timeEntry, this);
+        }
+        return null;
     }
 
     @Override

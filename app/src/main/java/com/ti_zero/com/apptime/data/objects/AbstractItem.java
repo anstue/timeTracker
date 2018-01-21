@@ -4,6 +4,7 @@ import android.databinding.Bindable;
 
 import com.ti_zero.com.apptime.BR;
 import com.ti_zero.com.apptime.data.dto.StartItemDTO;
+import com.ti_zero.com.apptime.data.dto.TimeEntryDTO;
 import com.ti_zero.com.apptime.helper.DurationPrinter;
 
 import java.io.Serializable;
@@ -137,4 +138,6 @@ public abstract class AbstractItem extends ObservableWithUUID implements Seriali
     public abstract long getTodayTime();
 
     public abstract String getShortStartTime();
+
+    public abstract TimeEntryDTO findCurrentTimeEntry();
 }

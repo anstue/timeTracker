@@ -234,6 +234,22 @@ public class MainTimeActivity extends AppCompatActivity {
         }
 
         @Override
+        public void onBtnMinus10Click(AbstractItem item) {
+            Logging.logInfo(LogTag.UI, "onBtnMinus10Click called");
+            if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+                startAndChangeItemRunningTimeEntry(item, getApplicationContext(), dataAccessFacade, -10);
+            }
+        }
+
+        @Override
+        public void onBtnPlus10Click(AbstractItem item) {
+            Logging.logInfo(LogTag.UI, "onBtnPlus10Click called");
+            if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+                startAndChangeItemRunningTimeEntry(item, getApplicationContext(), dataAccessFacade, +10);
+            }
+        }
+
+        @Override
         public void openChangeNameDialog(AbstractItem item) {
             changeNameDialog = new Dialog(context);
             changeNameDialog.setCancelable(true);

@@ -27,6 +27,7 @@ import com.ti_zero.com.apptime.data.dao.db.worker.NewTimeEntryDbWorker;
 import com.ti_zero.com.apptime.data.dao.db.worker.RemoveItemDbWorker;
 import com.ti_zero.com.apptime.data.dao.db.worker.RemoveTimeEntryDbWorker;
 import com.ti_zero.com.apptime.data.dto.StartItemDTO;
+import com.ti_zero.com.apptime.data.dto.TimeEntryDTO;
 import com.ti_zero.com.apptime.data.objects.AbstractItem;
 import com.ti_zero.com.apptime.data.objects.AccountItem;
 import com.ti_zero.com.apptime.data.objects.GroupItem;
@@ -36,6 +37,8 @@ import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -168,6 +171,48 @@ public class DataAccessFacade implements IDataAccessFacade {
     public void addTimeEntry(AccountItem item, TimeEntry timeEntry) {
         item.getTimeEntries().add(timeEntry);
         appExecutors.diskIO().execute(new NewTimeEntryDbWorker(appDatabase, item, timeEntry));
+    }
+
+    @Override
+    public void startAndChangeItemRunningTimeEntry(AbstractItem item, int minutes) {
+
+        if (item.isRunning()) {
+            changeCurrentTimeEntry(item, minutes);
+        } else {
+            startItem(item);
+            changeCurrentTimeEntry(item, minutes);
+        }
+        item.notifyPropertyChanged(BR.btnToggleText);
+        item.notifyPropertyChanged(BR.running);
+        //TODO unit tests
+    }
+
+    private void changeCurrentTimeEntry(AbstractItem item, int i) {
+        TimeEntryDTO dto = item.findCurrentTimeEntry();
+        Date nextToLast = getNextToLastTimeEntry(dto.getItem().getTimeEntries());
+        Calendar start = Calendar.getInstance();
+        start.setTime(dto.getTimEntry().getStart());
+        start.add(Calendar.MINUTE, i);
+        Date currentDate = new Date();
+        //cannot start in future
+        if(start.getTime().getTime()>currentDate.getTime()) {
+            start.setTime(currentDate);
+        }
+        //it is not possible that timeEntry starts before nextToLast timeEntry
+        if(start.getTime().getTime()<nextToLast.getTime()) {
+            start.setTime(nextToLast);
+            start.add(Calendar.SECOND,1);
+        }
+        dto.getTimEntry().setStart(start.getTime());
+        appExecutors.diskIO().execute(new ChangeTimeEntryDbWorker(appDatabase, dto.getItem(), dto.getTimEntry()));
+
+    }
+
+    private Date getNextToLastTimeEntry(List<TimeEntry> timeEntries) {
+        if(timeEntries.size()>=2) {
+            return timeEntries.get(timeEntries.size()-2).getEnd();
+        }
+        return null;
     }
 
 }

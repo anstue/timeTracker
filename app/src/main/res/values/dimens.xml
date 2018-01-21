@@ -10,4 +10,5 @@
     <dimen name="notification_icon_margin">6dp</dimen>
     <dimen name="notification_icon_margin_start">4dp</dimen>
     <dimen name="product_item_min_height">100dp</dimen>
+    <dimen name="btnSmall">50dp</dimen>
 </resources>

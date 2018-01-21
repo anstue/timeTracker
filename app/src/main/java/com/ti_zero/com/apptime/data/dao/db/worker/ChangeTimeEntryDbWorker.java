@@ -35,7 +35,7 @@ public class ChangeTimeEntryDbWorker extends GenericWorkerThread {
             timeEntryToChange = item.getLastTimeEntry();
         }
         TimeEntity timeEntity = new TimeEntity(timeEntryToChange.getUniqueID(), item.getUniqueID(),
-                timeEntryToChange.getStart().getTime(), timeEntryToChange.getEnd().getTime());
+                timeEntryToChange.getStart().getTime(), timeEntryToChange.getEnd() == null ? -1 : timeEntryToChange.getEnd().getTime());
         appDatabase.timeEntityDao().updateTimeEntity(timeEntity);
         Logging.logInfo(LogTag.PERSISTENZ, "ChangeTimeEntryDbWorker finished");
     }

@@ -2,6 +2,7 @@ package com.ti_zero.com.apptime.data.objects;
 
 import com.ti_zero.com.apptime.BR;
 import com.ti_zero.com.apptime.data.dto.StartItemDTO;
+import com.ti_zero.com.apptime.data.dto.TimeEntryDTO;
 import com.ti_zero.com.apptime.data.objects.factories.ObjectFactory;
 import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
@@ -171,6 +172,17 @@ public class GroupItem extends AbstractItem {
         } else {
             return "";
         }
+    }
+
+    @Override
+    public TimeEntryDTO findCurrentTimeEntry() {
+        for(AbstractItem item : items) {
+            TimeEntryDTO timeEntryDTO = item.findCurrentTimeEntry();
+            if(timeEntryDTO != null) {
+                return timeEntryDTO;
+            }
+        }
+        return null;
     }
 
     public void findAndRemoveItem(long itemUUID) {

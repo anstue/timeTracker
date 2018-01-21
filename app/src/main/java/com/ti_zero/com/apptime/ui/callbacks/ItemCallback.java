@@ -1,13 +1,6 @@
 package com.ti_zero.com.apptime.ui.callbacks;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
-
-import com.ti_zero.com.apptime.MainTimeActivity;
-import com.ti_zero.com.apptime.R;
 import com.ti_zero.com.apptime.data.DataAccessFacade;
 import com.ti_zero.com.apptime.data.objects.AbstractItem;
 import com.ti_zero.com.apptime.helper.LogTag;
@@ -22,6 +15,8 @@ public interface ItemCallback {
 
     void onClick(AbstractItem item);
     void onBtnClick(AbstractItem item);
+    void onBtnMinus10Click(AbstractItem item);
+    void onBtnPlus10Click(AbstractItem item);
     void openChangeNameDialog(AbstractItem item);
 
     default void stopItem(AbstractItem item, Context context, DataAccessFacade dataAccessFacade) {
@@ -30,6 +25,13 @@ public interface ItemCallback {
             Logging.logDebug(LogTag.UI, "stopItem: " + item.getName());
         }
         NotificationHelper.removeNotification(context);
+    }
+
+    default void startAndChangeItemRunningTimeEntry(AbstractItem item, Context context, DataAccessFacade dataAccessFacade, int minutes) {
+        dataAccessFacade.startAndChangeItemRunningTimeEntry(item, minutes);
+        if (!item.isRunning()) {
+            NotificationHelper.removeNotification(context);
+        }
     }
 
     default void startItem(AbstractItem item, boolean existingTimeEntry, Context context, DataAccessFacade dataAccessFacade) {

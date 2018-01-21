@@ -33,4 +33,6 @@ public interface IDataAccessFacade {
     void removeTimeEntry(AccountItem accountItem, TimeEntry timeEntry);
 
     void addTimeEntry(AccountItem selectedItem, TimeEntry timeEntry);
+
+    void startAndChangeItemRunningTimeEntry(AbstractItem item, int minutes);
 }
