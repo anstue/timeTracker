@@ -7,6 +7,8 @@
         <RelativeLayout
             android:id="@+id/notification_item"
             android:layout_width="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/btnNotificationToggle"
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/title"
@@ -27,6 +29,7 @@
                 android:layout_marginStart="@dimen/item_horizontal_margin"
                 android:layout_marginTop="@dimen/notification_horizontal_margin"
                 android:layout_below="@id/title"
+                android:layout_alignParentStart="true"
                 android:text="@string/app_name"
                 android:textSize="@dimen/text_size" />
 
