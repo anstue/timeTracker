@@ -50,7 +50,6 @@ public class TimeEntryActivity extends AppCompatActivity {
         recyclerViewItems.setAdapter(adapter);
 
         Toolbar toolbar = findViewById(R.id.timeEntryToolbar);
-        setSupportActionBar(toolbar);
         toolbar.setTitle(selectedItem.getName());
         setSupportActionBar(toolbar);
     }

@@ -43,6 +43,10 @@
         <activity
             android:name=".ui.TimeEntryActivity"
             android:label="@string/title_activity_time_entry"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.AgendaActivity"
+            android:label="@string/title_activity_agenda"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

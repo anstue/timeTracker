@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="item"
+            type="com.ti_zero.com.apptime.ui.objects.AgendaItem" />
+
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/item_horizontal_margin"
+        android:layout_marginStart="@dimen/item_horizontal_margin"
+        android:clickable="true"
+        android:contextClickable="true"
+        android:focusable="true"
+        android:minHeight="@dimen/product_item_min_height"
+        android:orientation="horizontal"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/item_horizontal_margin"
+                android:layout_marginStart="@dimen/item_horizontal_margin">
+
+                <TextView
+                    android:id="@+id/itemGroupNames"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{item.getGroupNames()}"/>
+
+                <TextView
+                    android:id="@+id/itemAccountName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/itemGroupNames"
+                    android:text="@{item.getAccountName()}"/>
+
+                <TextView
+                    android:id="@+id/itemEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/itemAccountName"
+                    android:text="@{item.getPrettyPrintEnd()}"/>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/item_horizontal_margin"
+                android:layout_marginStart="@dimen/item_horizontal_margin">
+                <TextView
+                    android:id="@+id/labelDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="5dp"
+                    android:text="@string/duration"/>
+                <TextView
+                    android:id="@+id/itemDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/chrono_margin"
+                    android:focusable="false"
+                    android:layout_below="@id/labelDuration"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="5dp"
+                    android:text="@{item.getPrettyPrintDuration()}"
+                    android:textSize="@dimen/text_size" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/item_horizontal_margin"
+                android:layout_marginStart="@dimen/item_horizontal_margin">
+
+                <TextView
+                    android:id="@+id/itemStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{item.getPrettyPrintStart()}"/>
+
+
+            </RelativeLayout>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</layout>
+

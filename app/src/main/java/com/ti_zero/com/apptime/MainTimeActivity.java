@@ -25,6 +25,7 @@ import com.ti_zero.com.apptime.data.objects.GroupItem;
 import com.ti_zero.com.apptime.data.objects.factories.ObjectFactory;
 import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
+import com.ti_zero.com.apptime.ui.AgendaActivity;
 import com.ti_zero.com.apptime.ui.adapters.ItemAdapter;
 import com.ti_zero.com.apptime.ui.TimeEntryActivity;
 import com.ti_zero.com.apptime.ui.callbacks.ItemCallback;
@@ -134,8 +135,8 @@ public class MainTimeActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-            getApplicationContext().startActivity(intent);
+            Intent intent = new Intent(this, SettingsActivity.class);
+            this.startActivity(intent);
             return true;
         } else if (id == R.id.btnMenuMainNewGroup) {
             dataAccessFacade.createNewItem(selectedGroupItem, objectFactory.getNewGroupItem());
@@ -149,6 +150,10 @@ public class MainTimeActivity extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("file/*");
             startActivityForResult(intent, FILE_OPEN_CODE);
+        } else if (id == R.id.action_agenda) {
+            Intent intent = new Intent(this, AgendaActivity.class);
+            intent.putExtra(MainTimeActivity.ITEM_UUID, selectedGroupItem.getUniqueID());
+            this.startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -245,7 +250,7 @@ public class MainTimeActivity extends AppCompatActivity {
         public void onBtnPlus10Click(AbstractItem item) {
             Logging.logInfo(LogTag.UI, "onBtnPlus10Click called");
             if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-                startAndChangeItemRunningTimeEntry(item, getApplicationContext(), dataAccessFacade, +10);
+                startAndChangeItemRunningTimeEntry(item, getApplicationContext(), dataAccessFacade, 10);
             }
         }
 

@@ -29,12 +29,16 @@ Release 1.2------------------------
 
 //TODO deutsche übersetzung
 
-//TODO notification prettifying bei langen namen
-
 //faster start stop (dbworker get called too often)
 
-//auswertung von zeitraum
-
-
-//Fehler bei start btn 10min früher reihenfolge von timeentries nicht mehr gewährleistet
-//check das dass nicht passieren kann
+//agendaView
+-nicer date function if on same day and week show like:
+ Monday 08:00-13:00
+ 
+ Monday, 15.01. 08:00-13:00
+ 
+ Monday, 15.01.2018 08:00-13:00
+ 
+  Monday 08:00-
+  Tuesday 13:00
+...

@@ -22,6 +22,7 @@
     <string name="title_activity_settings">Settings</string>
     <string name="minus10">-10</string>
     <string name="plus10">+10</string>
+    <string name="agenda">Agenda</string>
 
     <!-- Strings related to Settings -->
 
@@ -99,4 +100,5 @@
     <string name="notification_channel_item_description_info">Shows the running item</string>
     <string name="notification_channel_processing_name_info">Processing tasks</string>
     <string name="notification_channel_processing_description_info">Shows background processing tasks</string>
+    <string name="title_activity_agenda">AgendaActivity</string>
 </resources>
