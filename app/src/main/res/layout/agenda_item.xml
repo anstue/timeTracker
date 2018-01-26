@@ -37,6 +37,9 @@
                     android:id="@+id/itemGroupNames"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_toStartOf="@id/labelDuration"
+                    android:layout_alignParentStart="true"
+                    android:textSize="@dimen/text_size"
                     android:text="@{item.getGroupNames()}"/>
 
                 <TextView
@@ -44,23 +47,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/itemGroupNames"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/black"
                     android:text="@{item.getAccountName()}"/>
 
+                <TextView
+                    android:id="@+id/itemSimilarity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size"
+                    android:layout_below="@id/itemAccountName"
+                    android:visibility='@{item.getSimilarityOfStartEnd().equals("")?8:0}'
+                    android:text="@{item.getSimilarityOfStartEnd()}"/>
                 <TextView
                     android:id="@+id/itemEnd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/itemAccountName"
-                    android:text="@{item.getPrettyPrintEnd()}"/>
+                    android:textSize="@dimen/text_size"
+                    android:layout_below="@id/itemSimilarity"
+                    android:text="@{item.getPrettyPrintStart()}"/>
 
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/item_horizontal_margin"
-                android:layout_marginStart="@dimen/item_horizontal_margin">
                 <TextView
                     android:id="@+id/labelDuration"
                     android:layout_width="wrap_content"
@@ -79,19 +85,16 @@
                     android:layout_marginEnd="5dp"
                     android:text="@{item.getPrettyPrintDuration()}"
                     android:textSize="@dimen/text_size" />
-            </RelativeLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/item_horizontal_margin"
-                android:layout_marginStart="@dimen/item_horizontal_margin">
+
 
                 <TextView
                     android:id="@+id/itemStart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{item.getPrettyPrintStart()}"/>
+                    android:textSize="@dimen/text_size"
+                    android:layout_below="@id/itemEnd"
+                    android:text="@{item.getPrettyPrintEnd()}"/>
 
 
             </RelativeLayout>

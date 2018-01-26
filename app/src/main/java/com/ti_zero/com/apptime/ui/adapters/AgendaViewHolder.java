@@ -62,6 +62,7 @@ class AgendaViewHolder extends RecyclerView.ViewHolder implements View.OnCreateC
 
     private void removeItem() {
        // dataAccessFacade.removeTimeEntry(binding.getItem(), binding.getTimeEntry());
+        //TODO implement
         agendaAdapter.notifyDataSetChanged();
     }
 }

@@ -29,16 +29,11 @@ Release 1.2------------------------
 
 //TODO deutsche übersetzung
 
+//Screen der die Zeit aufteilen kann von einem timeEntry
+//Konzept überlegen, wenn auf Gruppe Start geklickt wird timeEntry markieren
+
+
+
 //faster start stop (dbworker get called too often)
 
-//agendaView
--nicer date function if on same day and week show like:
- Monday 08:00-13:00
- 
- Monday, 15.01. 08:00-13:00
- 
- Monday, 15.01.2018 08:00-13:00
- 
-  Monday 08:00-
-  Tuesday 13:00
-...
+//implement remove in agendaView
