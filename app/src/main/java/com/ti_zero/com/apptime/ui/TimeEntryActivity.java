@@ -15,8 +15,10 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.ti_zero.com.apptime.BaseApp;
 import com.ti_zero.com.apptime.MainTimeActivity;
 import com.ti_zero.com.apptime.R;
+import com.ti_zero.com.apptime.data.DataAccessFacade;
 import com.ti_zero.com.apptime.data.objects.AccountItem;
 import com.ti_zero.com.apptime.data.objects.TimeEntry;
 import com.ti_zero.com.apptime.ui.adapters.TimeEntryAdapter;
@@ -32,6 +34,11 @@ public class TimeEntryActivity extends AppCompatActivity {
     private TimeEntryAdapter adapter;
     private AccountItem selectedItem;
     private Dialog timeEntryDialog;
+    private final DataAccessFacade dataAccessFacade;
+
+    public TimeEntryActivity() {
+        dataAccessFacade = ((BaseApp)getApplication()).getDataAccessFacade();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +50,9 @@ public class TimeEntryActivity extends AppCompatActivity {
         if (selectedItemUUID == -1) {
             throw new RuntimeException("TimeEntryActivity opened without ITEM_UUID");
         }
-        selectedItem = (AccountItem) MainTimeActivity.getDataAccessFacade().getDataInMemoryStorage().findItem(selectedItemUUID);
+        selectedItem = (AccountItem) dataAccessFacade.getDataInMemoryStorage().findItem(selectedItemUUID);
 
-        adapter = new TimeEntryAdapter(this, selectedItem, MainTimeActivity.getDataAccessFacade());
+        adapter = new TimeEntryAdapter(this, selectedItem, dataAccessFacade);
         RecyclerView recyclerViewItems = findViewById(R.id.timeEntries);
         recyclerViewItems.setAdapter(adapter);
 
@@ -111,7 +118,7 @@ public class TimeEntryActivity extends AppCompatActivity {
             Date end = DateHelper.getDateFromString(endDate + " " + endTime);
             if(start.getTime()<end.getTime()) {
                 TimeEntry timeEntry = new TimeEntry(start, end);
-                MainTimeActivity.getDataAccessFacade().addTimeEntry(selectedItem, timeEntry);
+                dataAccessFacade.addTimeEntry(selectedItem, timeEntry);
                 adapter.notifyDataSetChanged();
                 timeEntryDialog.dismiss();
             } else {

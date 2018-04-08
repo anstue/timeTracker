@@ -10,6 +10,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.ti_zero.com.apptime.AppExecutors;
+import com.ti_zero.com.apptime.BaseApp;
 import com.ti_zero.com.apptime.data.dao.db.entities.AccountEntity;
 import com.ti_zero.com.apptime.data.dao.db.entities.GroupEntity;
 import com.ti_zero.com.apptime.data.dao.db.entities.TimeEntity;
@@ -36,7 +37,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private final MediatorLiveData<Boolean> databaseCreated = new MediatorLiveData<>();
 
-    public static AppDatabase getDatabase(final Context context, final AppExecutors executors) {
+    public static AppDatabase getInstance(final Context context, final AppExecutors executors) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
@@ -77,14 +78,6 @@ public abstract class AppDatabase extends RoomDatabase {
         INSTANCE = null;
     }
 
-    public static AppDatabase getINSTANCE() {
-        return INSTANCE;
-    }
-
-    public static void setINSTANCE(AppDatabase INSTANCE) {
-        AppDatabase.INSTANCE = INSTANCE;
-    }
-
     public MutableLiveData<Boolean> isInitialized() {
         return initialized;
     }
@@ -105,6 +98,7 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     }
 
+
     private static class DbCreator implements Runnable {
 
         private Context appContext;
@@ -117,7 +111,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
         @Override
         public void run() {
-                AppDatabase database = AppDatabase.getDatabase(appContext, appExecutors);
+                AppDatabase database = AppDatabase.getInstance(appContext, appExecutors);
                 database.setDatabaseCreated();
         }
     }

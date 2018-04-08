@@ -32,7 +32,10 @@ Release 1.2------------------------
 //Screen der die Zeit aufteilen kann von einem timeEntry
 //Konzept überlegen, wenn auf Gruppe Start geklickt wird timeEntry markieren
 
-
+//Kommentar zu jedem TimeEntry - (db erweiterung!!)
+Bug item running, add timeEntry manuelly, then running item is not first one
+  after restart it is first one again
+  make it more error resistent
 
 //faster start stop (dbworker get called too often)
 

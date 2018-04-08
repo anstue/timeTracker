@@ -21,7 +21,7 @@ public interface IDataAccessFacade {
     void changeItem(AbstractItem item);
     void removeItem(long itemId);
 
-    void startItem(AbstractItem item);
+    void stopOtherItemsAndStartItem(AbstractItem item);
     void stopItem(AbstractItem item);
 
     void removeItem(GroupItem selectedGroupItem, int position);

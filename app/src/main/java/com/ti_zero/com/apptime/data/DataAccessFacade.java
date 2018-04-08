@@ -1,23 +1,12 @@
 package com.ti_zero.com.apptime.data;
 
-import android.accounts.Account;
-import android.app.Application;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.ti_zero.com.apptime.AppExecutors;
 import com.ti_zero.com.apptime.BR;
+import com.ti_zero.com.apptime.BaseApp;
 import com.ti_zero.com.apptime.data.dao.db.AppDatabase;
-import com.ti_zero.com.apptime.data.dao.db.entities.AccountEntity;
-import com.ti_zero.com.apptime.data.dao.db.entities.GroupEntity;
-import com.ti_zero.com.apptime.data.dao.db.entities.TimeEntity;
 import com.ti_zero.com.apptime.data.dao.db.worker.ChangeItemDbWorker;
 import com.ti_zero.com.apptime.data.dao.db.worker.ChangeTimeEntryDbWorker;
 import com.ti_zero.com.apptime.data.dao.db.worker.CreateNewItemDbWorker;
@@ -54,11 +43,13 @@ public class DataAccessFacade implements IDataAccessFacade {
     private AppExecutors appExecutors;
     private Context context;
 
-    public DataAccessFacade(Context applicationContext) {
-        appExecutors = new AppExecutors();
-        this.appDatabase = AppDatabase.getDatabase(applicationContext, appExecutors);
+    private static DataAccessFacade instance;
+
+    public DataAccessFacade(BaseApp baseApp) {
+        this.appExecutors = baseApp.getAppExecutors();
+        this.appDatabase = baseApp.getDatabase();
         this.dataInMemoryStorage = new DataInMemoryStorage();
-        this.context = applicationContext;
+        this.context = baseApp;
 
         initialize();
     }
@@ -69,6 +60,15 @@ public class DataAccessFacade implements IDataAccessFacade {
 
     private void initialize() {
         appExecutors.diskIO().execute(new InitializeMemoryDbWorker(appDatabase, dataInMemoryStorage));
+    }
+
+    public static DataAccessFacade getInstance(BaseApp baseApp) {
+        if (instance == null) {
+            synchronized (DataAccessFacade.class) {
+                instance = new DataAccessFacade(baseApp);
+            }
+        }
+        return instance;
     }
 
     @Override
@@ -101,7 +101,10 @@ public class DataAccessFacade implements IDataAccessFacade {
     }
 
     @Override
-    public void startItem(AbstractItem item) {
+    public void stopOtherItemsAndStartItem(AbstractItem item) {
+
+        stopAllItems(item);
+
         StartItemDTO addedTo = item.addTimeEntry();
         if (addedTo.isNewItem()) {
             appExecutors.diskIO().execute(new CreateNewItemDbWorker(addedTo.getItem().getParent(), addedTo.getItem(), appDatabase));
@@ -116,7 +119,18 @@ public class DataAccessFacade implements IDataAccessFacade {
         //TODO save every item in hierarchy eg. for lastUsage(not just the first and last one)
         appExecutors.diskIO().execute(new ChangeItemDbWorker(item, appDatabase));
         appExecutors.diskIO().execute(new ChangeItemDbWorker(addedTo.getItem(), appDatabase));
-        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "startItem item:" + item.getName());
+        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "stopOtherItemsAndStartItem item:" + item.getName());
+    }
+
+    private void stopAllItems(AbstractItem item) {
+        if (getDataInMemoryStorage().getRootItem().isRunning()) {
+            //check rootItem maybe sth is running in another group
+            //check if item itself is running(child of group)
+            if (!item.isRunning()) {
+                stopItem(getDataInMemoryStorage().getRootItem());
+                Logging.logDebug(LogTag.UI, "Stopped item over root item: " + item.getName());
+            }
+        }
     }
 
     @Override
@@ -179,7 +193,7 @@ public class DataAccessFacade implements IDataAccessFacade {
         if (item.isRunning()) {
             changeCurrentTimeEntry(item, minutes);
         } else {
-            startItem(item);
+            stopOtherItemsAndStartItem(item);
             changeCurrentTimeEntry(item, minutes);
         }
         item.notifyPropertyChanged(BR.btnToggleText);
@@ -195,13 +209,13 @@ public class DataAccessFacade implements IDataAccessFacade {
         start.add(Calendar.MINUTE, i);
         Date currentDate = new Date();
         //cannot start in future
-        if(start.getTime().getTime()>currentDate.getTime()) {
+        if (start.getTime().getTime() > currentDate.getTime()) {
             start.setTime(currentDate);
         }
         //it is not possible that timeEntry starts before nextToLast timeEntry
-        if(start.getTime().getTime()<nextToLast.getTime()) {
+        if (nextToLast != null && start.getTime().getTime() < nextToLast.getTime()) {
             start.setTime(nextToLast);
-            start.add(Calendar.SECOND,1);
+            start.add(Calendar.SECOND, 1);
         }
         dto.getTimEntry().setStart(start.getTime());
         appExecutors.diskIO().execute(new ChangeTimeEntryDbWorker(appDatabase, dto.getItem(), dto.getTimEntry()));
@@ -209,8 +223,8 @@ public class DataAccessFacade implements IDataAccessFacade {
     }
 
     private Date getNextToLastTimeEntry(List<TimeEntry> timeEntries) {
-        if(timeEntries.size()>=2) {
-            return timeEntries.get(timeEntries.size()-2).getEnd();
+        if (timeEntries.size() >= 2) {
+            return timeEntries.get(timeEntries.size() - 2).getEnd();
         }
         return null;
     }

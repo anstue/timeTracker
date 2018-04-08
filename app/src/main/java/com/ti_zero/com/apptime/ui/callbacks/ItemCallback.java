@@ -35,17 +35,9 @@ public interface ItemCallback {
     }
 
     default void startItem(AbstractItem item, boolean existingTimeEntry, Context context, DataAccessFacade dataAccessFacade) {
-        Logging.logDebug(LogTag.UI, "startItem: " + item.getName());
-        if (dataAccessFacade.getDataInMemoryStorage().getRootItem().isRunning()) {
-            //check rootItem maybe sth is running in another group
-            //check if item itself is running(child of group)
-            if (!item.isRunning()) {
-                dataAccessFacade.stopItem(dataAccessFacade.getDataInMemoryStorage().getRootItem());
-                Logging.logDebug(LogTag.UI, "Stopped item over root item: " + item.getName());
-            }
-        }
+        Logging.logDebug(LogTag.UI, "stopOtherItemsAndStartItem: " + item.getName());
         if (!existingTimeEntry) {
-            dataAccessFacade.startItem(item);
+            dataAccessFacade.stopOtherItemsAndStartItem(item);
         }
         NotificationHelper.createNotification(item, context);
     }

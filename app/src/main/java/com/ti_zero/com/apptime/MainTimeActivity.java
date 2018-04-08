@@ -39,11 +39,11 @@ public class MainTimeActivity extends AppCompatActivity {
 
     public static final String ITEM_UUID = "GroupItemUUID";
     private static final int FILE_OPEN_CODE = 1;
-    private static DataAccessFacade dataAccessFacade; //TODO make not static here use android Application class
     public static final String NOTIFICATION_CHANNEL_ITEM_ID_INFO = "ITEM_CHANNEL";
     public static final String NOTIFICATION_CHANNEL_PROCESSING_ID_INFO = "PROCESSING_CHANNEL";
-
     private ObjectFactory objectFactory = new ObjectFactory();
+
+    private DataAccessFacade dataAccessFacade;
     private ItemAdapter adapter;
     private GroupItem selectedGroupItem;
     private Dialog changeNameDialog;
@@ -53,17 +53,12 @@ public class MainTimeActivity extends AppCompatActivity {
         super();
     }
 
-    //TODO solve in another way inject with Application class
-    public static DataAccessFacade getDataAccessFacade() {
-        return dataAccessFacade;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (dataAccessFacade == null) {
+            dataAccessFacade= ((BaseApp)getApplication()).getDataAccessFacade();
             setContentView(R.layout.activity_loading);
-            dataAccessFacade = new DataAccessFacade(getApplicationContext());
             Logging.logInfo(LogTag.UI, "MainTimeActivity waits for DataAccessFacade: ");
             dataAccessFacade.isInitialized().observe(this, (Boolean initialized) -> {
                 if (initialized != null && initialized) {
