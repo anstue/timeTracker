@@ -34,16 +34,13 @@ public class TimeEntryActivity extends AppCompatActivity {
     private TimeEntryAdapter adapter;
     private AccountItem selectedItem;
     private Dialog timeEntryDialog;
-    private final DataAccessFacade dataAccessFacade;
-
-    public TimeEntryActivity() {
-        dataAccessFacade = ((BaseApp)getApplication()).getDataAccessFacade();
-    }
+    private DataAccessFacade dataAccessFacade;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_entry);
+        dataAccessFacade = ((BaseApp)getApplication()).getDataAccessFacade();
 
         final long selectedItemUUID = getIntent().getLongExtra(MainTimeActivity.ITEM_UUID, -1);
 

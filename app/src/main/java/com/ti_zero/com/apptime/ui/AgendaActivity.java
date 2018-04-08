@@ -21,18 +21,15 @@ public class AgendaActivity extends AppCompatActivity {
 
     private GroupItem selectedGroupItem;
     private AgendaAdapter adapter;
-    private final DataAccessFacade dataAccessFacade;
+    private DataAccessFacade dataAccessFacade;
 
-    public AgendaActivity() {
-        dataAccessFacade = ((BaseApp)getApplication()).getDataAccessFacade();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agenda);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
+        dataAccessFacade = ((BaseApp)getApplication()).getDataAccessFacade();
 
         final long selectedGroupUUID = getIntent().getLongExtra(MainTimeActivity.ITEM_UUID, -1);
         if (selectedGroupUUID == -1) {
