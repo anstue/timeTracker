@@ -111,6 +111,7 @@ public class MainTimeActivity extends AppCompatActivity {
         fab.setOnClickListener((View view) -> {
             dataAccessFacade.createNewItem(selectedGroupItem, objectFactory.getNewAccountItem());
             adapter.notifyDataSetChanged();
+            recyclerViewItems.scrollToPosition(0);
         });
         Logging.logInfo(LogTag.UI, "MainTimeActivity created with UUID: " + selectedGroupItem.getUniqueID());
     }

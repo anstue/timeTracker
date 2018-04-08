@@ -5,6 +5,8 @@ import com.ti_zero.com.apptime.R;
 import com.ti_zero.com.apptime.data.dto.StartItemDTO;
 import com.ti_zero.com.apptime.data.dto.TimeEntryDTO;
 import com.ti_zero.com.apptime.helper.DurationPrinter;
+import com.ti_zero.com.apptime.helper.LogTag;
+import com.ti_zero.com.apptime.helper.Logging;
 import com.ti_zero.com.apptime.helper.TimeHelper;
 
 import java.sql.Time;
@@ -20,6 +22,7 @@ import java.util.List;
 public class AccountItem extends AbstractItem {
 
     private volatile List<TimeEntry> timeEntries;
+    private TimeEntry runningEntry;
     private GroupItem parent;
 
     public AccountItem(String name, String description, Date lastUsage, boolean favorite) {
@@ -45,18 +48,27 @@ public class AccountItem extends AbstractItem {
         return timeEntries;
     }
 
+    public void addTimeEntry(TimeEntry timeEntry) {
+        timeEntries.add(timeEntry);
+        if (runningEntry != null && !timeEntry.isStopped()) {
+            throw new RuntimeException("Multiple timeEntries running within one accountItem");
+        } else if (!timeEntry.isStopped()) {
+            runningEntry = timeEntry;
+        }
+    }
+
     public void setTimeEntries(List<TimeEntry> timeEntries) {
         this.timeEntries = timeEntries;
     }
 
     @Override
     public boolean isRunning() {
-        return timeEntries.size() > 0 && !getLastTimeEntry().isStopped();
+        return getRunningTimeEntry() != null && !getRunningTimeEntry().isStopped();
     }
 
     public AccountItem stop() {
-        if (timeEntries.size() > 0) {
-            getLastTimeEntry().stop();
+        if (getRunningTimeEntry() != null) {
+            getRunningTimeEntry().stop();
             setLastUsage(new Date());
             notifyPropertyChanged(BR.btnToggleText);
             notifyPropertyChanged(BR.running);
@@ -64,18 +76,20 @@ public class AccountItem extends AbstractItem {
         return this;
     }
 
-    public TimeEntry getLastTimeEntry() {
-        return timeEntries.get(timeEntries.size() - 1);
+    public TimeEntry getRunningTimeEntry() {
+        return runningEntry;
     }
 
     public StartItemDTO addTimeEntry() {
         //make sure only one time_entry is running
         TimeEntry timeEntry = null;
-        if (timeEntries.size() > 0 && !getLastTimeEntry().isStopped()) {
-            timeEntry = getLastTimeEntry();
-            getLastTimeEntry().stop();
+        if (getRunningTimeEntry() != null && !getRunningTimeEntry().isStopped()) {
+            timeEntry = getRunningTimeEntry();
+            getRunningTimeEntry().stop();
         }
-        timeEntries.add(new TimeEntry(new Date()));
+        TimeEntry newTimeEntry = new TimeEntry(new Date());
+        addTimeEntry(newTimeEntry);
+
         setLastUsage(new Date());
         notifyPropertyChanged(BR.btnToggleText);
         notifyPropertyChanged(BR.running);
@@ -110,13 +124,13 @@ public class AccountItem extends AbstractItem {
 
     @Override
     public String getShortStartTime() {
-        return getLastTimeEntry().getPrettyPrintShortStart();
+        return (getRunningTimeEntry() != null) ? getRunningTimeEntry().getPrettyPrintShortStart() : "";
     }
 
     @Override
     public TimeEntryDTO findCurrentTimeEntry() {
-        TimeEntry timeEntry = getLastTimeEntry();
-        if (timeEntry.getEnd() == null) {
+        TimeEntry timeEntry = getRunningTimeEntry();
+        if (timeEntry != null && timeEntry.getEnd() == null) {
             return new TimeEntryDTO(timeEntry, this);
         }
         return null;

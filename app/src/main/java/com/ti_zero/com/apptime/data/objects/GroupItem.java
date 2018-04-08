@@ -62,7 +62,7 @@ public class GroupItem extends AbstractItem {
 
     public void addItem(AbstractItem item) {
         item.setParent(this);
-        items.add(item);
+        items.add(0,item);
     }
 
     public AbstractItem getStandardAccountItem() {

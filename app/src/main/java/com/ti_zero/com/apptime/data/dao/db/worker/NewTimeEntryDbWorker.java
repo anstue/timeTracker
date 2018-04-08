@@ -32,7 +32,7 @@ public class NewTimeEntryDbWorker extends GenericWorkerThread {
     public void run() {
         TimeEntry timeEntryToAdd = timeEntry;
         if (timeEntry == null) {
-            timeEntryToAdd = addedTo.getLastTimeEntry();
+            timeEntryToAdd = addedTo.getRunningTimeEntry();
         }
         TimeEntity timeEntity = new TimeEntity(timeEntryToAdd.getUniqueID(), addedTo.getUniqueID(),
                 timeEntryToAdd.getStart().getTime(), timeEntryToAdd.getEnd() == null ? -1 : timeEntryToAdd.getEnd().getTime());
