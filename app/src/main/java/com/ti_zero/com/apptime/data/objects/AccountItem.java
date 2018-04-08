@@ -49,8 +49,8 @@ public class AccountItem extends AbstractItem {
     }
 
     public void addTimeEntry(TimeEntry timeEntry) {
-        timeEntries.add(timeEntry);
-        if (runningEntry != null && !timeEntry.isStopped()) {
+        timeEntries.add(0, timeEntry);
+        if (runningEntry != null && !runningEntry.isStopped() && !timeEntry.isStopped()) {
             throw new RuntimeException("Multiple timeEntries running within one accountItem");
         } else if (!timeEntry.isStopped()) {
             runningEntry = timeEntry;
