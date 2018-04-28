@@ -17,7 +17,8 @@ public class ToggleItemBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        dataAccessFacade = ((BaseApp)context.getApplicationContext()).getDataAccessFacade();//TODO könnte sein dass es nicht BaseApp ist. https://stackoverflow.com/questions/5018545/getapplication-vs-getapplicationcontext
+        //TODO könnte sein dass es nicht BaseApp ist. https://stackoverflow.com/questions/5018545/getapplication-vs-getapplicationcontext
+        dataAccessFacade = ((BaseApp)context.getApplicationContext()).getDataAccessFacade();
         long itemId = intent.getExtras().getLong(NotificationHelper.NOTIFICATION_ACTION_BTN_TOGGLE);
         Logging.logInfo(LogTag.NOTIFICATION, "Getting start/stop call from notification " + itemId);
         AbstractItem item = dataAccessFacade.findItem(itemId);

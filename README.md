@@ -32,8 +32,31 @@ Release 1.2------------------------
 //Screen der die Zeit aufteilen kann von einem timeEntry
 //Konzept überlegen, wenn auf Gruppe Start geklickt wird timeEntry markieren
 
+AccountItem starten nach geolocation:
+ geofences
+
+AccountItem starten wenn kalendereintrag
+ -custom field within calendar item? or Account or Work Calendar and private calendar every item(or only groups) can have such a calendar
+
 //Kommentar zu jedem TimeEntry - (db erweiterung!!)
 
 //faster start stop (dbworker get called too often)
+ besseres konzept fuer die property change events bzw vereinheitlichen
 
 //implement remove in agendaView
+
+//API Anbindung mit Server, integration mit nextcloud oder komplett standalone
+verbindung mit calendar(auf app zu lokalem calendar und auf server mit nextcloud calendar)(caldav)
+ algorithmus entwickeln
+  Konflikte?
+
+ synchronisierung von account items
+ berechnung und erstellung nur lokal
+ auswertung am server
+
+ endpoints:
+   createItem
+   createTimeEntry
+
+am server wird es abgespeichert wie in der client db
+

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class ObservableWithUUID extends BaseObservable {
 
-    public final static long ROOT_UUID = 0;
+    public static final long ROOT_UUID = 0;
     //root item has id of ROOT_UUID
     private long uniqueID;
 

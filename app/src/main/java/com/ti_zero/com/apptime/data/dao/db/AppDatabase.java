@@ -20,8 +20,7 @@ import com.ti_zero.com.apptime.data.dao.db.entities.TimeEntity;
  */
 
 
-@Database(entities = {AccountEntity.class, TimeEntity.class, GroupEntity.class
-}, version = 2)
+@Database(entities = {AccountEntity.class, TimeEntity.class, GroupEntity.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String DATABASE_NAME = "itemdatabase";
@@ -111,8 +110,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
         @Override
         public void run() {
-                AppDatabase database = AppDatabase.getInstance(appContext, appExecutors);
-                database.setDatabaseCreated();
+            AppDatabase database = AppDatabase.getInstance(appContext, appExecutors);
+            database.setDatabaseCreated();
         }
     }
 }
