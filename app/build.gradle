@@ -7,9 +7,15 @@ android {
         applicationId "com.ti_zero.com.apptime"
         minSdkVersion 23
         targetSdkVersion 27
-        versionCode 8
-        versionName "1.6"
+        versionCode 9
+        versionName "1.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
     buildTypes {
         release {

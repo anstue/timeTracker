@@ -1,0 +1,238 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "e003f54c1bde6bac064fc16eea9aa685",
+    "entities": [
+      {
+        "tableName": "accountentity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`accountEntityId` INTEGER NOT NULL, `groupEntityId` INTEGER NOT NULL, `name` TEXT, `description` TEXT, `lastUsage` INTEGER NOT NULL, `favorite` INTEGER NOT NULL, PRIMARY KEY(`accountEntityId`), FOREIGN KEY(`groupEntityId`) REFERENCES `groupentity`(`groupEntityId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "accountEntityId",
+            "columnName": "accountEntityId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groupEntityId",
+            "columnName": "groupEntityId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastUsage",
+            "columnName": "lastUsage",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "favorite",
+            "columnName": "favorite",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "accountEntityId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_accountentity_accountEntityId",
+            "unique": false,
+            "columnNames": [
+              "accountEntityId"
+            ],
+            "createSql": "CREATE  INDEX `index_accountentity_accountEntityId` ON `${TABLE_NAME}` (`accountEntityId`)"
+          },
+          {
+            "name": "index_accountentity_groupEntityId",
+            "unique": false,
+            "columnNames": [
+              "groupEntityId"
+            ],
+            "createSql": "CREATE  INDEX `index_accountentity_groupEntityId` ON `${TABLE_NAME}` (`groupEntityId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "groupentity",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "groupEntityId"
+            ],
+            "referencedColumns": [
+              "groupEntityId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "timeentity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`timeEntityId` INTEGER NOT NULL, `accountEntityId` INTEGER NOT NULL, `start` INTEGER NOT NULL, `end` INTEGER NOT NULL, PRIMARY KEY(`timeEntityId`), FOREIGN KEY(`accountEntityId`) REFERENCES `accountentity`(`accountEntityId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "timeEntityId",
+            "columnName": "timeEntityId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accountEntityId",
+            "columnName": "accountEntityId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "start",
+            "columnName": "start",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "end",
+            "columnName": "end",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "timeEntityId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_timeentity_timeEntityId",
+            "unique": false,
+            "columnNames": [
+              "timeEntityId"
+            ],
+            "createSql": "CREATE  INDEX `index_timeentity_timeEntityId` ON `${TABLE_NAME}` (`timeEntityId`)"
+          },
+          {
+            "name": "index_timeentity_accountEntityId",
+            "unique": false,
+            "columnNames": [
+              "accountEntityId"
+            ],
+            "createSql": "CREATE  INDEX `index_timeentity_accountEntityId` ON `${TABLE_NAME}` (`accountEntityId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "accountentity",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "accountEntityId"
+            ],
+            "referencedColumns": [
+              "accountEntityId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "groupentity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`groupEntityId` INTEGER NOT NULL, `parentGroupEntityId` INTEGER, `name` TEXT, `description` TEXT, `lastUsage` INTEGER NOT NULL, `favorite` INTEGER NOT NULL, PRIMARY KEY(`groupEntityId`), FOREIGN KEY(`parentGroupEntityId`) REFERENCES `groupentity`(`groupEntityId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "groupEntityId",
+            "columnName": "groupEntityId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parentGroupEntityId",
+            "columnName": "parentGroupEntityId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastUsage",
+            "columnName": "lastUsage",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "favorite",
+            "columnName": "favorite",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "groupEntityId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_groupentity_groupEntityId",
+            "unique": false,
+            "columnNames": [
+              "groupEntityId"
+            ],
+            "createSql": "CREATE  INDEX `index_groupentity_groupEntityId` ON `${TABLE_NAME}` (`groupEntityId`)"
+          },
+          {
+            "name": "index_groupentity_parentGroupEntityId",
+            "unique": false,
+            "columnNames": [
+              "parentGroupEntityId"
+            ],
+            "createSql": "CREATE  INDEX `index_groupentity_parentGroupEntityId` ON `${TABLE_NAME}` (`parentGroupEntityId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "groupentity",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "parentGroupEntityId"
+            ],
+            "referencedColumns": [
+              "groupEntityId"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e003f54c1bde6bac064fc16eea9aa685\")"
+    ]
+  }
+}
