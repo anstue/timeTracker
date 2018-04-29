@@ -40,11 +40,11 @@ public class GroupItemTest {
         newGroupItem.addItem(objectFactory.getNewAccountItem(NAME_3, TEST_UUID_3));
 
         assertThat(groupItem.getChildren().size(), is(2));
-        assertThat(groupItem.getChildren().get(0).getUniqueID(), is(TEST_UUID_1));
-        assertThat(groupItem.getChildren().get(1).getUniqueID(), is(TEST_UUID_2));
+        assertThat(groupItem.getChildren().get(0).getUniqueID(), is(TEST_UUID_2));
+        assertThat(groupItem.getChildren().get(1).getUniqueID(), is(TEST_UUID_1));
 
-        assertThat(groupItem.getChildren().get(1).getChildren().size(), is(1));
-        assertThat(groupItem.getChildren().get(1).getChildren().get(0).getUniqueID(), is(TEST_UUID_3));
+        assertThat(groupItem.getChildren().get(0).getChildren().size(), is(1));
+        assertThat(groupItem.getChildren().get(0).getChildren().get(0).getUniqueID(), is(TEST_UUID_3));
     }
 
     @Test
