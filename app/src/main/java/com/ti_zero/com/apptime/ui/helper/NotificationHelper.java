@@ -37,7 +37,6 @@ public class NotificationHelper {
         CharSequence tickerText = "AppTime";
         long when = System.currentTimeMillis();
 
-
         Intent toggleReceive = new Intent(context, ToggleItemBroadcastReceiver.class);
         toggleReceive.putExtra(NOTIFICATION_ACTION_BTN_TOGGLE, item.getUniqueID());
         PendingIntent pendingIntentToggle = PendingIntent.getBroadcast(context, 0, toggleReceive,
@@ -68,29 +67,11 @@ public class NotificationHelper {
         notification.when = when;
         notification.tickerText = tickerText;
 
-//        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_item);
-//        if (item.isRunning()) {
-//            contentView.setTextViewText(R.id.btnNotificationToggle, "Stop");
-//            contentView.setViewVisibility(R.id.txtCounting, 0);
-//        } else {
-//            contentView.setTextViewText(R.id.btnNotificationToggle, "Start");
-//            contentView.setViewVisibility(R.id.txtCounting, 8);
-//        }
-//        contentView.setTextViewText(R.id.txtNotificationName, item.getName());
-        //setListeners(contentView, context, item);
-
-        // notification.contentView = contentView;
-        notification.flags |= Notification.FLAG_ONGOING_EVENT;
+        if(item.isRunning()) {
+            notification.flags |= Notification.FLAG_ONGOING_EVENT;
+        }
         manager.notify(NOTIFICATION_ID_RUNNING_ITEM, notification);
     }
-
-//    private static void setListeners(RemoteViews contentView, Context context, AbstractItem item) {
-//        Intent toggle = new Intent(context, NotificationHelperActivity.class);
-//        Logging.logInfo(LogTag.NOTIFICATION, "NotificationHelper setListeners for " + item.getUniqueID());
-//        toggle.putExtra(NOTIFICATION_ACTION_BTN_TOGGLE, item.getUniqueID());
-//        PendingIntent pToggle = PendingIntent.getActivity(context, 0, toggle, 0);
-//        contentView.setOnClickPendingIntent(R.id.btnNotificationToggle, pToggle);
-//    }
 
     public static void createLoadingNotification(Context context) {
         Logging.logDebug(LogTag.UI, "creating notification json ");

@@ -57,7 +57,6 @@
                 android:textSize="@dimen/text_size" />
 
         </RelativeLayout>
-
     <Button
         android:id="@+id/btnNotificationToggle"
         style="?android:attr/buttonStyleSmall"

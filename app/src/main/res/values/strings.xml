@@ -23,11 +23,19 @@
     <string name="minus10">-10</string>
     <string name="plus10">+10</string>
     <string name="agenda">Agenda</string>
+    <string name="author">Authored by Anton Stütz</string>
+    <string name="license">Licensed under GPLv3</string>
+    <string name="contributions">Contributions are welcome under:</string>
+    <string name="fileABug">File a bug report under: </string>
+    <string name="githubUrl">https://github.com/anstue/timeTracker</string>
+    <string name="issueTracker">https://github.com/anstue/timeTracker/issues</string>
+
 
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
+    <string name="pref_header_about">About</string>
 
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
     <string name="pref_description_social_recommendations">Recommendations for people to contact

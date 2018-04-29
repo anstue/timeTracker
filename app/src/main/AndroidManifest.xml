@@ -48,7 +48,7 @@
         <activity
             android:name=".ui.AgendaActivity"
             android:label="@string/title_activity_agenda"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
