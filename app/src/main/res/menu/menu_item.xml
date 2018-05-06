@@ -7,6 +7,9 @@
         android:visible="false"
         android:title="Edit" />
     <item
+        android:id="@+id/btnMenuItemOptions"
+        android:title="@string/options" />
+    <item
         android:id="@+id/btnMenuItemRemove"
         android:title="Remove" />
 </menu>

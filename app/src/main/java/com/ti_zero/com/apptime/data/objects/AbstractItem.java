@@ -126,6 +126,10 @@ public abstract class AbstractItem extends ObservableWithUUID implements Seriali
     @Bindable
     public abstract List<AbstractItem> getChildren();
 
+    public boolean isGroup() {
+        return getChildren() != null;
+    }
+
     @Bindable
     public abstract GroupItem getParent();
 

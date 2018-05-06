@@ -1,16 +1,20 @@
 package com.ti_zero.com.apptime.ui.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 
+import com.ti_zero.com.apptime.MainTimeActivity;
 import com.ti_zero.com.apptime.R;
 import com.ti_zero.com.apptime.data.DataAccessFacade;
 import com.ti_zero.com.apptime.databinding.ItemAccountBinding;
 import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
+import com.ti_zero.com.apptime.ui.ItemOptionsActivity;
 
 /**
  * Created by anstue on 12/28/17.
@@ -22,13 +26,15 @@ class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnCreateCon
     private final ItemAccountBinding binding;
     private final DataAccessFacade dataAccessFacade;
     private final ItemAdapter itemAdapter;
+    private final Context context;
 
-    ItemViewHolder(ItemAccountBinding binding, DataAccessFacade dataAccessFacade, ItemAdapter itemAdapter) {
+    ItemViewHolder(Context context, ItemAccountBinding binding, DataAccessFacade dataAccessFacade, ItemAdapter itemAdapter) {
         super(binding.getRoot());
         this.binding = binding;
         this.dataAccessFacade = dataAccessFacade;
         this.itemAdapter = itemAdapter;
         itemView.setOnCreateContextMenuListener(this);
+        this.context=context;
     }
 
 
@@ -53,6 +59,11 @@ class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnCreateCon
         switch (item.getItemId()) {
             case R.id.btnMenuItemEdit:
                 //deleteNote(info.id);
+                return true;
+            case R.id.btnMenuItemOptions:
+                Intent intent = new Intent(context, ItemOptionsActivity.class);
+                intent.putExtra(MainTimeActivity.ITEM_UUID, binding.getItem().getParent().getItems().get(getAdapterPosition()).getUniqueID());
+                context.startActivity(intent);
                 return true;
             case R.id.btnMenuItemRemove:
                 removeItem(getAdapterPosition());

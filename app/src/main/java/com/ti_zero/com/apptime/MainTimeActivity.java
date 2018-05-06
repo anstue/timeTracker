@@ -3,6 +3,7 @@ package com.ti_zero.com.apptime;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.SearchManager;
 import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.ti_zero.com.apptime.data.DataAccessFacade;
@@ -30,10 +32,12 @@ import com.ti_zero.com.apptime.ui.adapters.ItemAdapter;
 import com.ti_zero.com.apptime.ui.TimeEntryActivity;
 import com.ti_zero.com.apptime.ui.callbacks.ItemCallback;
 import com.ti_zero.com.apptime.ui.helper.PermissionHelper;
+import com.ti_zero.com.apptime.ui.listeners.ItemQueryTextListener;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class MainTimeActivity extends AppCompatActivity {
 
@@ -47,6 +51,7 @@ public class MainTimeActivity extends AppCompatActivity {
     private ItemAdapter adapter;
     private GroupItem selectedGroupItem;
     private Dialog changeNameDialog;
+    private String searchKeyword = "";
 
 
     public MainTimeActivity() {
@@ -57,7 +62,7 @@ public class MainTimeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (dataAccessFacade == null) {
-            dataAccessFacade= ((BaseApp)getApplication()).getDataAccessFacade();
+            dataAccessFacade = ((BaseApp) getApplication()).getDataAccessFacade();
             setContentView(R.layout.activity_loading);
             Logging.logInfo(LogTag.UI, "MainTimeActivity waits for DataAccessFacade: ");
             dataAccessFacade.isInitialized().observe(this, (Boolean initialized) -> {
@@ -67,7 +72,7 @@ public class MainTimeActivity extends AppCompatActivity {
             });
 // Register NotificationChannels needed for API 26+ to display notification messages
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationManager mNotificationManager = (NotificationManager)getSystemService(
+                NotificationManager mNotificationManager = (NotificationManager) getSystemService(
                         Context.NOTIFICATION_SERVICE);
                 NotificationChannel infoChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ITEM_ID_INFO,
                         getString(R.string.notification_channel_item_name_info), NotificationManager.IMPORTANCE_DEFAULT);
@@ -91,17 +96,14 @@ public class MainTimeActivity extends AppCompatActivity {
 
     private void initializeView() {
         setContentView(R.layout.activity_main_time);
-        //we cannot pass an object here, because it gets serialized and we get a new instance her. That's bad in a tree which works with references
-        final long selectedGroupUUID = getIntent().getLongExtra(ITEM_UUID, -1);
-
-        if (selectedGroupUUID == -1) {
-            selectedGroupItem = dataAccessFacade.getDataInMemoryStorage().getRootItem();
-        } else {
-            selectedGroupItem = (GroupItem) dataAccessFacade.getDataInMemoryStorage().findItem(selectedGroupUUID);
-        }
+        handleIntent(getIntent());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(selectedGroupItem.getName());
-        List<AbstractItem> children = selectedGroupItem.getChildren();
+        if (isSearchActive()) {
+            toolbar.setTitle(selectedGroupItem.getName() + " - " + searchKeyword);
+        } else {
+            toolbar.setTitle(selectedGroupItem.getName());
+        }
+        List<AbstractItem> children = selectedGroupItem.getChildrenFiltered(searchKeyword);
         Collections.sort(children);
         adapter = new ItemAdapter(this, children, dataAccessFacade, new ItemClickCallback(this));
         setSupportActionBar(toolbar);
@@ -116,11 +118,43 @@ public class MainTimeActivity extends AppCompatActivity {
         Logging.logInfo(LogTag.UI, "MainTimeActivity created with UUID: " + selectedGroupItem.getUniqueID());
     }
 
+    private boolean isSearchActive() {
+        return !"".equals(searchKeyword);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main_time, menu);
+
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new ItemQueryTextListener(this, selectedGroupItem.getUniqueID()));
         return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            searchKeyword = intent.getStringExtra(SearchManager.QUERY);
+        }
+
+        //we cannot pass an object here, because it gets serialized and we get a new instance her. That's bad in a tree which works with references
+        long selectedGroupUUID = getIntent().getLongExtra(ITEM_UUID, -1);
+        if (selectedGroupUUID == -1) {
+            selectedGroupItem = dataAccessFacade.getDataInMemoryStorage().getRootItem();
+        } else {
+            selectedGroupItem = (GroupItem) dataAccessFacade.getDataInMemoryStorage().findItem(selectedGroupUUID);
+        }
     }
 
     @Override
@@ -209,9 +243,12 @@ public class MainTimeActivity extends AppCompatActivity {
         public void onClick(AbstractItem item) {
             Logging.logInfo(LogTag.UI, "ItemCallback called");
             if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-                if (item.getChildren() != null) {
+                if (item.isGroup()) {
                     Intent intent = new Intent(getApplicationContext(), MainTimeActivity.class);
                     intent.putExtra(MainTimeActivity.ITEM_UUID, item.getUniqueID());
+                    if (isSearchActive()) {
+                        propagateActiveSearch(intent, searchKeyword);
+                    }
                     context.startActivity(intent);
                 } else { //AccountItem
                     Intent intent = new Intent(getApplicationContext(), TimeEntryActivity.class);
@@ -258,6 +295,12 @@ public class MainTimeActivity extends AppCompatActivity {
             ((TextView) changeNameDialog.findViewById(R.id.txtChangedName)).setTag(item.getUniqueID());
             changeNameDialog.show();
         }
+    }
+
+    private void propagateActiveSearch(Intent intent, String searchString) {
+        Logging.logInfo(LogTag.UI, "propagateActiveSearch called");
+        intent.putExtra(SearchManager.QUERY, searchString);
+        intent.setAction(Intent.ACTION_SEARCH);
     }
 
 }

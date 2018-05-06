@@ -4,6 +4,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.Observable;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -41,13 +42,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     }
 
     @Override
-    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Logging.logInfo(LogTag.UI, "Entering ItemAdapter onCreateViewHolder");
         ItemAccountBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()), R.layout.item_account,
                         parent, false);
         binding.setCallback(itemCallback);
-        return new ItemViewHolder(binding, dataAccessFacade, this);
+        return new ItemViewHolder(context, binding, dataAccessFacade, this);
     }
 
     public void setItems(List<AbstractItem> items) {
@@ -116,7 +117,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
         item.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable observable, int i) {
-                if(holder.itemView.getTag(R.id.chronoTimeTotal)==observable) {
+                if (holder.itemView.getTag(R.id.chronoTimeTotal) == observable) {
                     Logging.logDebug(LogTag.UI, "Entering item onPropertyChanged, property: " + i);
                     if (i == BR.btnToggleText) {
                         AbstractItem item = (AbstractItem) observable;

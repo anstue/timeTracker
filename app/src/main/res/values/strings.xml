@@ -11,6 +11,7 @@
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="end">End</string>
+    <string name="options">Options</string>
     <string name="create">Create</string>
     <string name="ok">OK</string>
     <string name="counting">Counting</string>
@@ -19,9 +20,13 @@
     <string name="duration">Duration</string>
     <string name="new_entry">New Entry</string>
     <string name="title_activity_calendar">CalendarActivity</string>
+    <string name="title_activity_itemOptions">Item Options Activity</string>
     <string name="title_activity_settings">Settings</string>
     <string name="minus10">-10</string>
     <string name="plus10">+10</string>
+    <string name="search_hint">Item name</string>
+    <string name="search_title">Search</string>
+    <string name="new_group">New Group</string>
     <string name="agenda">Agenda</string>
     <string name="author">Authored by Anton Stütz</string>
     <string name="license">Licensed under GPLv3</string>

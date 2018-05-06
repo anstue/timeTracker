@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by uni on 12/22/17.
@@ -62,7 +63,7 @@ public class GroupItem extends AbstractItem {
 
     public void addItem(AbstractItem item) {
         item.setParent(this);
-        items.add(0,item);
+        items.add(0, item);
     }
 
     public AbstractItem getStandardAccountItem() {
@@ -107,7 +108,7 @@ public class GroupItem extends AbstractItem {
 
     @Override
     public StartItemDTO addTimeEntry() {
-        boolean newItem=false;
+        boolean newItem = false;
         setLastUsage(new Date());
         if (getStandardAccountItem() == null) {
             //TODO show toast or snackbar, that accountitem got created
@@ -116,7 +117,7 @@ public class GroupItem extends AbstractItem {
             Logging.logInfo(LogTag.DATA_OBJECTS, "Automatically creating new AccountItem");
         }
         StartItemDTO dto = getStandardAccountItem().addTimeEntry();
-        if(newItem) {
+        if (newItem) {
             dto.setNewItem(true);
             return dto;
         }
@@ -167,7 +168,7 @@ public class GroupItem extends AbstractItem {
 
     @Override
     public String getShortStartTime() {
-        if(getStandardAccountItem()!=null) {
+        if (getStandardAccountItem() != null) {
             return getStandardAccountItem().getShortStartTime();
         } else {
             return "";
@@ -176,9 +177,9 @@ public class GroupItem extends AbstractItem {
 
     @Override
     public TimeEntryDTO findCurrentTimeEntry() {
-        for(AbstractItem item : items) {
+        for (AbstractItem item : items) {
             TimeEntryDTO timeEntryDTO = item.findCurrentTimeEntry();
-            if(timeEntryDTO != null) {
+            if (timeEntryDTO != null) {
                 return timeEntryDTO;
             }
         }
@@ -186,13 +187,28 @@ public class GroupItem extends AbstractItem {
     }
 
     public void findAndRemoveItem(long itemUUID) {
-        for(AbstractItem item : items) {
-            if(item.getUniqueID()==itemUUID) {
+        for (AbstractItem item : items) {
+            if (item.getUniqueID() == itemUUID) {
                 items.remove(item);
                 return;
-            } else if(item instanceof GroupItem) {
+            } else if (item instanceof GroupItem) {
                 ((GroupItem) item).findAndRemoveItem(itemUUID);
             }
+        }
+    }
+
+    public List<AbstractItem> getChildrenFiltered(String searchKeyword) {
+        if ("".equals(searchKeyword)) {
+            return getChildren();
+        } else {
+            return getChildren().stream().filter(item -> {
+                if (item instanceof GroupItem) {
+                    //also include groups which have children with the searchKeyword
+                    return ((GroupItem) item).getChildrenFiltered(searchKeyword).size() > 0;
+                } else {
+                    return item.getName().toLowerCase().contains(searchKeyword.toLowerCase());
+                }
+            }).collect(Collectors.toList());
         }
     }
 }
