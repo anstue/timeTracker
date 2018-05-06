@@ -8,7 +8,6 @@ import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -204,11 +203,15 @@ public class GroupItem extends AbstractItem {
             return getChildren().stream().filter(item -> {
                 if (item instanceof GroupItem) {
                     //also include groups which have children with the searchKeyword
-                    return ((GroupItem) item).getChildrenFiltered(searchKeyword).size() > 0;
+                    return itemNameMatches(searchKeyword, item) || ((GroupItem) item).getChildrenFiltered(searchKeyword).size() > 0;
                 } else {
-                    return item.getName().toLowerCase().contains(searchKeyword.toLowerCase());
+                    return itemNameMatches(searchKeyword, item);
                 }
             }).collect(Collectors.toList());
         }
+    }
+
+    private boolean itemNameMatches(String searchKeyword, AbstractItem item) {
+        return item.getName().toLowerCase().contains(searchKeyword.toLowerCase());
     }
 }

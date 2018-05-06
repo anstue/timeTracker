@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -21,9 +22,14 @@ public class GroupItemTest {
     private final static long TEST_UUID_1=1;
     private final static long TEST_UUID_2=2;
     private final static long TEST_UUID_3=3;
+    private final static long TEST_UUID_4=4;
+    private final static long TEST_UUID_5=5;
+    private final static long TEST_UUID_6=6;
     private final static String NAME_1="1";
     private final static String NAME_2="2";
     private final static String NAME_3="3";
+    private final static String NAME_HIT="HIT";
+    private final static String NAME_NOHIT="GIBBERISH";
     private GroupItem groupItem;
     private ObjectFactory objectFactory = new ObjectFactory();
 
@@ -45,6 +51,23 @@ public class GroupItemTest {
 
         assertThat(groupItem.getChildren().get(0).getChildren().size(), is(1));
         assertThat(groupItem.getChildren().get(0).getChildren().get(0).getUniqueID(), is(TEST_UUID_3));
+    }
+
+    @Test
+    public void testGetChildrenFiltered() {
+        groupItem.addItem(objectFactory.getNewAccountItem(NAME_HIT, TEST_UUID_1));
+        groupItem.addItem(objectFactory.getNewAccountItem(NAME_NOHIT, TEST_UUID_2));
+        groupItem.addItem(objectFactory.getNewGroupItem(NAME_HIT, TEST_UUID_3));
+        GroupItem newGroupItem = objectFactory.getNewGroupItem(NAME_NOHIT, TEST_UUID_4);
+        groupItem.addItem(newGroupItem);
+        newGroupItem.addItem(objectFactory.getNewAccountItem(NAME_HIT, TEST_UUID_5));
+        groupItem.addItem(objectFactory.getNewGroupItem(NAME_NOHIT, TEST_UUID_6));
+
+        List<AbstractItem> list = groupItem.getChildrenFiltered(NAME_HIT);
+        assertThat(list.size(),is(3));
+        assertThat(list.get(0).getUniqueID(),is(TEST_UUID_4));
+        assertThat(list.get(1).getUniqueID(),is(TEST_UUID_3));
+        assertThat(list.get(2).getUniqueID(),is(TEST_UUID_1));
     }
 
     @Test

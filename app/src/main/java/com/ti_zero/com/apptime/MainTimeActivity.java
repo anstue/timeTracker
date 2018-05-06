@@ -303,4 +303,7 @@ public class MainTimeActivity extends AppCompatActivity {
         intent.setAction(Intent.ACTION_SEARCH);
     }
 
+    public ItemAdapter getAdapter() {
+        return adapter;
+    }
 }
