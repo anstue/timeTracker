@@ -33,6 +33,9 @@ public interface TimeEntityDao {
     @Query("delete from timeentity where timeEntityId=:timeEntityId")
     void deleteTimeEntity(long timeEntityId);
 
+    @Query("delete from timeentity")
+    void removeAll();
+
     @Query("select * from timeEntity where accountEntityId = :accountEntityId order by start asc")
     List<TimeEntity> getTimeEntities(long accountEntityId);
 }

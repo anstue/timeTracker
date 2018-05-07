@@ -34,6 +34,9 @@ public interface AccountEntityDao {
     @Query("delete from accountentity where accountEntityId=:accountEntityId")
     void deleteAccountEntity(long accountEntityId);
 
+    @Query("delete from accountentity")
+    void removeAll();
+
     @Query("select * from accountentity where groupEntityId = :groupEntityId order by lastUsage desc")
     List<AccountEntity> getAccountEntities(long groupEntityId);
 }

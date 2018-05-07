@@ -10,7 +10,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.ti_zero.com.apptime.AppExecutors;
-import com.ti_zero.com.apptime.BaseApp;
 import com.ti_zero.com.apptime.data.dao.db.entities.AccountEntity;
 import com.ti_zero.com.apptime.data.dao.db.entities.GroupEntity;
 import com.ti_zero.com.apptime.data.dao.db.entities.TimeEntity;
@@ -86,6 +85,12 @@ public abstract class AppDatabase extends RoomDatabase {
      */
     public void setInitialized() {
         this.initialized.postValue(true);
+    }
+
+    public void removeAll() {
+        timeEntityDao().removeAll();
+        accountEntityDao().removeAll();
+        groupEntityDao().removeAll();
     }
 
     /**
