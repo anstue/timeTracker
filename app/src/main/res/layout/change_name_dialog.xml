@@ -12,6 +12,7 @@
             android:layout_marginTop="@dimen/txt_margin_top"
             android:layout_marginStart="@dimen/txt_margin_start"
             android:background="@android:color/transparent"
+            android:selectAllOnFocus="true"
             android:maxLength="30"
             android:maxLines="1"/>
         <Button

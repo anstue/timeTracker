@@ -15,9 +15,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -28,8 +29,8 @@ import com.ti_zero.com.apptime.data.objects.factories.ObjectFactory;
 import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
 import com.ti_zero.com.apptime.ui.AgendaActivity;
-import com.ti_zero.com.apptime.ui.adapters.ItemAdapter;
 import com.ti_zero.com.apptime.ui.TimeEntryActivity;
+import com.ti_zero.com.apptime.ui.adapters.ItemAdapter;
 import com.ti_zero.com.apptime.ui.callbacks.ItemCallback;
 import com.ti_zero.com.apptime.ui.helper.PermissionHelper;
 import com.ti_zero.com.apptime.ui.listeners.ItemQueryTextListener;
@@ -37,9 +38,13 @@ import com.ti_zero.com.apptime.ui.listeners.ItemQueryTextListener;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public class MainTimeActivity extends AppCompatActivity {
+
+    //TODO ##########################################
+    //Better usability time entry view - always sorted and stuff
+    //Nicer agenda view
+    //###############################################
 
     public static final String ITEM_UUID = "GroupItemUUID";
     private static final int FILE_OPEN_CODE = 1;
@@ -294,6 +299,8 @@ public class MainTimeActivity extends AppCompatActivity {
             ((TextView) changeNameDialog.findViewById(R.id.txtChangedName)).setText(item.getName());
             ((TextView) changeNameDialog.findViewById(R.id.txtChangedName)).setTag(item.getUniqueID());
             changeNameDialog.show();
+            changeNameDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE| WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+            changeNameDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
     }
 
