@@ -16,4 +16,6 @@ Pull Request checklist:
 
 * ./gradlew checkstyle should show no errors
 
+* execute the script buildAndDeployNewAppVersion.sh, it will do a checkstyle and test execution, the variables can be left empty
+
 
