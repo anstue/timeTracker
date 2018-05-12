@@ -29,7 +29,7 @@ echo "Using $STOREPATH for signing"
 ./gradlew test connectedAndroidTest --stacktrace
 ./gradlew assembleRelease
 
-export VERSION=$(./gradlew properties | grep versionName | sed 's#versionName: "##g' | sed 's#"##g' | tr -d '\n')
+export VERSION=$(./gradlew properties | grep versionName | sed 's#versionName: ##g'  | tr -d '\n')
 git tag -a $VERSION -m "v$VERSION"
 git push github master --tags
 
@@ -42,6 +42,6 @@ VERSIONCODE=$((VERSIONCODE+1))
 OLDVERSION=VERSION
 VERSION=`echo $VERSION + 0.1 | bc`
 #TODO persist into gradle.properties
-sed -i 's#versionName="$OLDVERSION"#versionName="$VERSION"#g' gradle.properties
+sed -i 's#versionName=$OLDVERSION#versionName=$VERSION#g' gradle.properties
 sed -i 's#versionCode=$OLDVERSIONCODE#versionCode=$VERSIONCODE#g' gradle.properties
 

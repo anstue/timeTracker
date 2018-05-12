@@ -2,6 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'checkstyle'
 apply plugin: 'com.github.triplet.play'
 
+def computeVersionName() {
+    return versionName
+}
+
+def computeVersionCode() {
+    return Integer.parseInt(versionCode)
+}
+
 android {
     compileSdkVersion 27
     playAccountConfigs {
@@ -14,8 +22,8 @@ android {
         applicationId "com.ti_zero.com.apptime"
         minSdkVersion 24
         targetSdkVersion 27
-        versionCode versionCode
-        versionName versionName
+        versionCode computeVersionCode()
+        versionName computeVersionName()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
