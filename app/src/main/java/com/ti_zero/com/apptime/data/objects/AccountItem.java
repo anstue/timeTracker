@@ -146,6 +146,9 @@ public class AccountItem extends AbstractItem {
 
     public void removeTimeEntry(TimeEntry timeEntry) {
         timeEntries.remove(timeEntry);
+        if (runningEntry == timeEntry) {
+            runningEntry = null;
+        }
         this.notifyPropertyChanged(BR.todayTimePrettyPrint);
         this.notifyPropertyChanged(BR.totalTimePrettyPrint);
     }
