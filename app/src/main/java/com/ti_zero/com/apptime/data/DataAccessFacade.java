@@ -198,7 +198,6 @@ public class DataAccessFacade implements IDataAccessFacade {
         }
         item.notifyPropertyChanged(BR.btnToggleText);
         item.notifyPropertyChanged(BR.running);
-        //TODO unit tests
     }
 
     @Override
