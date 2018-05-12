@@ -1,5 +1,8 @@
 package com.ti_zero.com.apptime.ui.adapters;
 
+import android.app.Activity;
+import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -8,6 +11,8 @@ import android.widget.PopupMenu;
 
 import com.ti_zero.com.apptime.R;
 import com.ti_zero.com.apptime.data.DataAccessFacade;
+import com.ti_zero.com.apptime.data.objects.AccountItem;
+import com.ti_zero.com.apptime.data.objects.TimeEntry;
 import com.ti_zero.com.apptime.databinding.TimeEntryBinding;
 import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
@@ -23,13 +28,15 @@ class TimeEntryViewHolder extends RecyclerView.ViewHolder implements View.OnCrea
     private final TimeEntryBinding binding;
     private final DataAccessFacade dataAccessFacade;
     private final TimeEntryAdapter timeEntryAdapter;
+    private final Context context;
 
-    TimeEntryViewHolder(TimeEntryBinding binding, DataAccessFacade dataAccessFacade, TimeEntryAdapter timeEntryAdapter) {
+    TimeEntryViewHolder(TimeEntryBinding binding, DataAccessFacade dataAccessFacade, TimeEntryAdapter timeEntryAdapter, Context context) {
         super(binding.getRoot());
         this.binding = binding;
         this.dataAccessFacade = dataAccessFacade;
         this.timeEntryAdapter = timeEntryAdapter;
         itemView.setOnCreateContextMenuListener(this);
+        this.context = context;
     }
 
     public TimeEntryBinding getBinding() {
@@ -40,7 +47,7 @@ class TimeEntryViewHolder extends RecyclerView.ViewHolder implements View.OnCrea
     public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
         Logging.logInfo(LogTag.UI, "TimeEntryViewHolder onCreateContextMenu ");
         PopupMenu popup = new PopupMenu(view.getContext(), view);
-        popup.getMenuInflater().inflate(R.menu.menu_item, popup.getMenu());
+        popup.getMenuInflater().inflate(R.menu.menu_time_entry, popup.getMenu());
         popup.setOnMenuItemClickListener(this);
         popup.show();
 
@@ -60,7 +67,18 @@ class TimeEntryViewHolder extends RecyclerView.ViewHolder implements View.OnCrea
     }
 
     private void removeItem() {
-        dataAccessFacade.removeTimeEntry(binding.getItem(), binding.getTimeEntry());
+        TimeEntry timeEntryToBeRemoved =  binding.getTimeEntry();
+        AccountItem parent = binding.getItem();
+        dataAccessFacade.removeTimeEntry(parent, timeEntryToBeRemoved);
         timeEntryAdapter.notifyDataSetChanged();
+        Snackbar snackbar = Snackbar.make(
+                ((Activity) context).getLayoutInflater().inflate(R.layout.snackbar_time_entry_removed,
+                        ((Activity) context).findViewById(android.R.id.content)), R.string.time_entry_removed,
+                Snackbar.LENGTH_LONG)
+                .setAction("UNDO", (View view) -> {
+                    dataAccessFacade.undoRemoveTimeEntry(parent, timeEntryToBeRemoved);
+                    timeEntryAdapter.notifyDataSetChanged();
+                });
+        snackbar.show();
     }
 }

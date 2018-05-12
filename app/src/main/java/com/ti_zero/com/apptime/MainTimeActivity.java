@@ -41,11 +41,6 @@ import java.util.List;
 
 public class MainTimeActivity extends AppCompatActivity {
 
-    //TODO ##########################################
-    //Better usability time entry view - always sorted and stuff
-    //Nicer agenda view
-    //###############################################
-
     public static final String ITEM_UUID = "GroupItemUUID";
     private static final int FILE_OPEN_CODE = 1;
     public static final String NOTIFICATION_CHANNEL_ITEM_ID_INFO = "ITEM_CHANNEL";

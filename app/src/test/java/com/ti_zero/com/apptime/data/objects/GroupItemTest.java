@@ -100,14 +100,14 @@ public class GroupItemTest {
     }
     private void fillGroupItem() {
         AccountItem item = objectFactory.getNewAccountItem(NAME_1, TEST_UUID_1);
-        item.getTimeEntries().add(new TimeEntry(new Date(0), new Date(40)));
+        item.addTimeEntry(new TimeEntry(new Date(0), new Date(40)));
         GroupItem item2 = objectFactory.getNewGroupItem(NAME_2, TEST_UUID_2);
         AccountItem item3 = objectFactory.getNewAccountItem(NAME_3, TEST_UUID_3);
-        item3.getTimeEntries().add(new TimeEntry(new Date(40), new Date(150)));
+        item3.addTimeEntry(new TimeEntry(new Date(40), new Date(150)));
         //add timeEntries which are today
         Date today = getToday();
-        item.getTimeEntries().add(new TimeEntry(new Date(today.getTime()), new Date(today.getTime()+ 40)));
-        item3.getTimeEntries().add(new TimeEntry(new Date(today.getTime()+40), new Date(today.getTime()+100)));
+        item.addTimeEntry(new TimeEntry(new Date(today.getTime()), new Date(today.getTime()+ 40)));
+        item3.addTimeEntry(new TimeEntry(new Date(today.getTime()+40), new Date(today.getTime()+100)));
 
         item2.addItem(item3);
         groupItem.addItem(item);

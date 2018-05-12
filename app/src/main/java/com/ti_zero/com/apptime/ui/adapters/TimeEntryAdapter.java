@@ -40,7 +40,7 @@ public class TimeEntryAdapter extends RecyclerView.Adapter<TimeEntryViewHolder> 
         TimeEntryBinding binding = DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()), R.layout.time_entry,
                         parent, false);
-        return new TimeEntryViewHolder(binding, dataAccessFacade, this);
+        return new TimeEntryViewHolder(binding, dataAccessFacade, this, context);
     }
 
 

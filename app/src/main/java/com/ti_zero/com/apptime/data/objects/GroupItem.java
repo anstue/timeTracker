@@ -61,8 +61,12 @@ public class GroupItem extends AbstractItem {
     }
 
     public void addItem(AbstractItem item) {
+        addItem(item, 0);
+    }
+
+    public void addItem(AbstractItem item, int position) {
         item.setParent(this);
-        items.add(0, item);
+        items.add(position, item);
     }
 
     public AbstractItem getStandardAccountItem() {
@@ -140,6 +144,10 @@ public class GroupItem extends AbstractItem {
 
     public void removeItem(int position) {
         items.remove(position);
+    }
+
+    public void removeItem(AbstractItem item) {
+        items.remove(item);
     }
 
     @Override

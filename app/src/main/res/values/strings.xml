@@ -28,6 +28,8 @@
     <string name="search_title">Search</string>
     <string name="new_group">New Group</string>
     <string name="remove">Remove</string>
+    <string name="item_removed">Item removed</string>
+    <string name="time_entry_removed">Time entry removed</string>
     <string name="agenda">Agenda</string>
     <string name="author">Authored by Anton Stütz</string>
     <string name="license">Licensed under GPLv3</string>

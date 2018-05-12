@@ -41,11 +41,12 @@ class AgendaViewHolder extends RecyclerView.ViewHolder implements View.OnCreateC
     public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
         Logging.logInfo(LogTag.UI, "AgendaViewHolder onCreateContextMenu ");
         PopupMenu popup = new PopupMenu(view.getContext(), view);
-        popup.getMenuInflater().inflate(R.menu.menu_item, popup.getMenu());
+        popup.getMenuInflater().inflate(R.menu.menu_agenda_item, popup.getMenu());
         popup.setOnMenuItemClickListener(this);
         popup.show();
 
     }
+
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         Logging.logInfo(LogTag.UI, "AgendaViewHolder onMenuItemClick, getAdapterPosition:" + getAdapterPosition());
@@ -61,7 +62,7 @@ class AgendaViewHolder extends RecyclerView.ViewHolder implements View.OnCreateC
     }
 
     private void removeItem() {
-       // dataAccessFacade.removeTimeEntry(binding.getItem(), binding.getTimeEntry());
+        // dataAccessFacade.removeTimeEntry(binding.getItem(), binding.getTimeEntry());
         //TODO implement
         agendaAdapter.notifyDataSetChanged();
     }

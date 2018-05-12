@@ -24,7 +24,7 @@ public interface IDataAccessFacade {
     void stopOtherItemsAndStartItem(AbstractItem item);
     void stopItem(AbstractItem item);
 
-    void removeItem(GroupItem selectedGroupItem, int position);
+    void removeItem(AbstractItem itemToRemove);
     void generateJson(String fileName);
     void loadFromJson(File file);
 
@@ -35,4 +35,8 @@ public interface IDataAccessFacade {
     void addTimeEntry(AccountItem selectedItem, TimeEntry timeEntry);
 
     void startAndChangeItemRunningTimeEntry(AbstractItem item, int minutes);
+
+    void undoRemoveItem(GroupItem parent, AbstractItem removedItem, int position);
+
+    void undoRemoveTimeEntry(AccountItem parent, TimeEntry timeEntryToBeRemoved);
 }

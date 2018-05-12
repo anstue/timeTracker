@@ -1,17 +1,12 @@
 package com.ti_zero.com.apptime.data.objects;
 
 import com.ti_zero.com.apptime.BR;
-import com.ti_zero.com.apptime.R;
 import com.ti_zero.com.apptime.data.dto.StartItemDTO;
 import com.ti_zero.com.apptime.data.dto.TimeEntryDTO;
-import com.ti_zero.com.apptime.helper.DurationPrinter;
-import com.ti_zero.com.apptime.helper.LogTag;
-import com.ti_zero.com.apptime.helper.Logging;
 import com.ti_zero.com.apptime.helper.TimeHelper;
 
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -45,11 +40,19 @@ public class AccountItem extends AbstractItem {
     }
 
     public List<TimeEntry> getTimeEntries() {
-        return timeEntries;
+        return Collections.unmodifiableList(timeEntries);
     }
 
     public void addTimeEntry(TimeEntry timeEntry) {
         timeEntries.add(0, timeEntry);
+        timeEntries.sort((TimeEntry o1, TimeEntry o2) -> {
+            if (o1.getStart().getTime() > o2.getStart().getTime()) {
+                return -1;
+            } else if (o1.getStart().getTime() < o2.getStart().getTime()) {
+                return 1;
+            }
+            return 0;
+        });
         if (runningEntry != null && !runningEntry.isStopped() && !timeEntry.isStopped()) {
             throw new RuntimeException("Multiple timeEntries running within one accountItem");
         } else if (!timeEntry.isStopped()) {

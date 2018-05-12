@@ -1,7 +1,9 @@
 package com.ti_zero.com.apptime.ui.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -11,6 +13,8 @@ import android.widget.PopupMenu;
 import com.ti_zero.com.apptime.MainTimeActivity;
 import com.ti_zero.com.apptime.R;
 import com.ti_zero.com.apptime.data.DataAccessFacade;
+import com.ti_zero.com.apptime.data.objects.AbstractItem;
+import com.ti_zero.com.apptime.data.objects.GroupItem;
 import com.ti_zero.com.apptime.databinding.ItemAccountBinding;
 import com.ti_zero.com.apptime.helper.LogTag;
 import com.ti_zero.com.apptime.helper.Logging;
@@ -34,7 +38,7 @@ class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnCreateCon
         this.dataAccessFacade = dataAccessFacade;
         this.itemAdapter = itemAdapter;
         itemView.setOnCreateContextMenuListener(this);
-        this.context=context;
+        this.context = context;
     }
 
 
@@ -74,8 +78,19 @@ class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnCreateCon
     }
 
     private void removeItem(int position) {
-        dataAccessFacade.removeItem(binding.getItem().getParent(), position);
+        GroupItem parent = binding.getItem().getParent();
+        AbstractItem itemToBeRemoved = binding.getItem();
+        dataAccessFacade.removeItem(itemToBeRemoved);
         itemAdapter.notifyDataSetChanged();
+        Snackbar snackbar = Snackbar.make(
+                ((Activity) context).getLayoutInflater().inflate(R.layout.snackbar_item_removed,
+                        ((Activity) context).findViewById(android.R.id.content)), R.string.item_removed,
+                Snackbar.LENGTH_LONG)
+                .setAction("UNDO", (View view) -> {
+                    dataAccessFacade.undoRemoveItem(parent, itemToBeRemoved, position);
+                    itemAdapter.notifyDataSetChanged();
+                });
+        snackbar.show();
     }
 
 }

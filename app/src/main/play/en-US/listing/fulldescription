@@ -1,0 +1,9 @@
+Simple time tracker, which can track different activities.
+
+Features:
+-group activities
+-show details for every activity
+-shows notification of currently running item
+-current item can be started and stopped on the lock screen
+-export data to json
+-item search

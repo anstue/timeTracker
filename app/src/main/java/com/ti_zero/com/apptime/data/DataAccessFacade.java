@@ -150,10 +150,9 @@ public class DataAccessFacade implements IDataAccessFacade {
     }
 
     @Override
-    public void removeItem(GroupItem groupItem, int position) {
-        AbstractItem itemToRemove = groupItem.getItems().get(position);
+    public void removeItem(AbstractItem itemToRemove) {
         removeItemFromDB(itemToRemove);
-        groupItem.removeItem(position);
+        itemToRemove.getParent().removeItem(itemToRemove);
         itemToRemove.setParent(null);
         itemToRemove.notifyPropertyChanged(BR.parent);
         Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "removeItem item:" + itemToRemove.getName());
@@ -183,8 +182,9 @@ public class DataAccessFacade implements IDataAccessFacade {
 
     @Override
     public void addTimeEntry(AccountItem item, TimeEntry timeEntry) {
-        item.getTimeEntries().add(timeEntry);
+        item.addTimeEntry(timeEntry);
         appExecutors.diskIO().execute(new NewTimeEntryDbWorker(appDatabase, item, timeEntry));
+        Logging.logInfo(LogTag.DATA_ACCESS_FACADE, "timeEntry added");
     }
 
     @Override
@@ -199,6 +199,19 @@ public class DataAccessFacade implements IDataAccessFacade {
         item.notifyPropertyChanged(BR.btnToggleText);
         item.notifyPropertyChanged(BR.running);
         //TODO unit tests
+    }
+
+    @Override
+    public void undoRemoveItem(GroupItem parent, AbstractItem removedItem, int position) {
+        parent.addItem(removedItem, position);
+        appExecutors.diskIO().execute(new CreateNewItemDbWorker(parent, removedItem, appDatabase));
+        Logging.logDebug(LogTag.DATA_ACCESS_FACADE, "undoRemoveItem item:" + removedItem.getName());
+    }
+
+    @Override
+    public void undoRemoveTimeEntry(AccountItem parent, TimeEntry timeEntryToBeRemoved) {
+        addTimeEntry(parent, timeEntryToBeRemoved);
+        Logging.logInfo(LogTag.DATA_ACCESS_FACADE, "timeEntry undo remove");
     }
 
     private void changeCurrentTimeEntry(AbstractItem item, int i) {

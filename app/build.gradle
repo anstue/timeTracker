@@ -1,14 +1,21 @@
 apply plugin: 'com.android.application'
 apply plugin: 'checkstyle'
+apply plugin: 'com.github.triplet.play'
 
 android {
     compileSdkVersion 27
+    playAccountConfigs {
+        defaultAccountConfig {
+            serviceAccountEmail = "$System.env.ACCOUNTEMAIL"
+            jsonFile = file("$System.env.JSONFILE")
+        }
+    }
     defaultConfig {
         applicationId "com.ti_zero.com.apptime"
         minSdkVersion 24
         targetSdkVersion 27
-        versionCode 10
-        versionName "1.8"
+        versionCode versionCode
+        versionName versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
@@ -16,11 +23,25 @@ android {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
+        playAccountConfig = playAccountConfigs.defaultAccountConfig
+    }
+    play {
+        track = 'alpha'
+        untrackOld = true
+    }
+    signingConfigs {
+        release {
+            storeFile file("$System.env.STOREPATH")
+            storePassword "$System.env.STOREPASSWORD"
+            keyAlias "$System.env.KEYALIAS"
+            keyPassword "$System.env.KEYPASSWORD"
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     dataBinding {
@@ -33,6 +54,7 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+
 }
 
 dependencies {
@@ -44,6 +66,7 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:cardview-v7:27.1.1'
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-all:2.0.2-beta'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
