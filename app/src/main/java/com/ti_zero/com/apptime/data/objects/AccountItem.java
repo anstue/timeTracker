@@ -60,10 +60,6 @@ public class AccountItem extends AbstractItem {
         }
     }
 
-    public void setTimeEntries(List<TimeEntry> timeEntries) {
-        this.timeEntries = timeEntries;
-    }
-
     @Override
     public boolean isRunning() {
         return getRunningTimeEntry() != null && !getRunningTimeEntry().isStopped();

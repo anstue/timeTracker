@@ -216,7 +216,7 @@ public class DataAccessFacade implements IDataAccessFacade {
 
     private void changeCurrentTimeEntry(AbstractItem item, int i) {
         TimeEntryDTO dto = item.findCurrentTimeEntry();
-        Date nextToLast = getNextToLastTimeEntry(dto.getItem().getTimeEntries());
+        Date nextToLast = getNextToRunningTimeEntry(dto.getItem().getTimeEntries(), dto);
         Calendar start = Calendar.getInstance();
         start.setTime(dto.getTimEntry().getStart());
         start.add(Calendar.MINUTE, i);
@@ -235,9 +235,12 @@ public class DataAccessFacade implements IDataAccessFacade {
 
     }
 
-    private Date getNextToLastTimeEntry(List<TimeEntry> timeEntries) {
+    private Date getNextToRunningTimeEntry(List<TimeEntry> timeEntries, TimeEntryDTO currentTimeEntry) {
         if (timeEntries.size() >= 2) {
-            return timeEntries.get(timeEntries.size() - 2).getEnd();
+            int currentIdx=timeEntries.indexOf(currentTimeEntry.getTimEntry());
+            if(currentIdx+1<timeEntries.size()) {
+                return timeEntries.get(currentIdx+1).getEnd();
+            }
         }
         return null;
     }
